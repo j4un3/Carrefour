@@ -1,13 +1,12 @@
 
+import be.esi.g34840.carrefour.implementation.ServeurImplementation;
 import be.esi.gui.outils.MsgOutils;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
  * To change this template, choose Tools | Templates
@@ -17,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author g34840
  */
-public class Main {
+public class Serveur {
 
     /**
      * @param args the command line arguments
@@ -26,15 +25,20 @@ public class Main {
         FileInputStream in = null;
         try {
             Properties defaultProps = new Properties();
-            in = new FileInputStream("ServeurProperties");
+            in = new FileInputStream("ServeurProperties.properties");
             defaultProps.load(in);
+                        System.setSecurityManager(new RMISecurityManager());
+
+            ServeurImplementation serveur = new ServeurImplementation();
             try {
                 java.rmi.Naming.rebind("rmi://" + defaultProps.getProperty("host")
-                        + ":" + defaultProps.getProperty("port") + "/Carrefour", null);
+                        + ":" + defaultProps.getProperty("port") + "/Carrefour", serveur);
             } catch (RemoteException ex) {
                 MsgOutils.erreur("Serveur RemoteException", ex.getMessage());
+                System.exit(0);
             } catch (MalformedURLException ex) {
                 MsgOutils.erreur("Serveur MalformedURLException", ex.getMessage());
+                System.exit(0);
             }
         } catch (IOException ex) {
             MsgOutils.erreur("Serveur IOException", ex.getMessage());
