@@ -67,7 +67,7 @@ public class Carrefour {
     }
 
     private void changeEtat() {
-        if (timers[0] > 1 || timers[1] > 1 || timers[2] > 1) {
+        if (timers[0] > 1 || timers[1] > 1 || timers[2] > 0) {
             switch (etat.getFeux(FEUX_VEHICULE_N_S).getValue()) {
                 case 0:
                     vert();

@@ -57,18 +57,20 @@ public class CarrefourClientVehiculeGUI extends JDialog {
                 public void windowClosing(WindowEvent e) {
                     try {
                         serveur.desinscription(client);
+                        System.exit(0);
                     } catch (RemoteException ex) {
                         MsgOutils.erreur("RemoteException", ex.getMessage());
+                        System.exit(0);
                     }
                 }
             });
         } catch (RemoteException ex) {
             MsgOutils.erreur("Client RemoteException", ex.getMessage());
+            System.exit(0);
         }
     }
 
     public void update() throws RemoteException {
-        System.out.println("TEST");
         leds[FEUX_VEHICULE_N_S].setColor(serveur.getEtat().getFeux(FEUX_VEHICULE_N_S).getColor());
         leds[FEUX_VEHICULE_E_O].setColor(serveur.getEtat().getFeux(FEUX_VEHICULE_E_O).getColor());
     }
