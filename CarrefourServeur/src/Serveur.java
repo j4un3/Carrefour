@@ -27,8 +27,7 @@ public class Serveur {
             Properties defaultProps = new Properties();
             in = new FileInputStream("ServeurProperties.properties");
             defaultProps.load(in);
-                        System.setSecurityManager(new RMISecurityManager());
-
+            System.setSecurityManager(new RMISecurityManager());
             ServeurImplementation serveur = new ServeurImplementation();
             try {
                 java.rmi.Naming.rebind("rmi://" + defaultProps.getProperty("host")

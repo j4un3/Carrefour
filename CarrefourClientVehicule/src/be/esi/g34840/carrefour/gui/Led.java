@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package be.esi.alg3.carrefour.mvc.model;
+package be.esi.g34840.carrefour.gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -42,6 +42,7 @@ public class Led extends javax.swing.JPanel implements Serializable {
      */
     public void setColor(Color color) {
         this.color = color;
+        repaint();
     }
 
     /**

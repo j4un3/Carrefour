@@ -4,32 +4,37 @@
  */
 package be.esi.alg3.carrefour.mvc.concept;
 
+import java.awt.Color;
+
 /**
  *
  * @author g34840
  */
 public enum FeuEnum {
 
-    WARNING("WARNING", 6),
-    ETEINT("Eteint", 5),
-    VERT_CLIGNOTANT("Vert clignotant", 4),
-    VERT("Vert", 3),
-    ORANGE("Orange", 2),
-    ROUGE("Rouge", 1);
-    
+    VERT("Vert", 0,Color.GREEN),
+    ORANGE("Orange", 1,Color.ORANGE),
+    ROUGE("Rouge", 2,Color.RED),
+    VERT_CLIGNOTANT("Vert clignotant", 3,Color.GRAY),
+    ETEINT("Eteint", 4,Color.white),
+    WARNING("WARNING", 5,Color.PINK);
     private String libelle;
-    private int feu;
-
-    private FeuEnum(String libelle, int feu) {
+    private int value;
+    private Color color;
+    private FeuEnum(String libelle, int feu, Color color) {
         this.libelle = libelle;
-        this.feu = feu;
+        this.value = feu;
+        this.color = color;
     }
 
     public String getLibelle() {
         return libelle;
     }
 
-    public int getFeu() {
-        return feu;
+    public int getValue() {
+        return value;
+    }
+    public Color getColor(){
+        return color;
     }
 }
