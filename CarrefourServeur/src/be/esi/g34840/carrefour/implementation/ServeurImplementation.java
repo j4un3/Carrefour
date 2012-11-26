@@ -65,4 +65,8 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
     public void update() {
         fire();
     }
+
+    @Override
+    public void connect() throws RemoteException {
+    }
 }

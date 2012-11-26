@@ -15,4 +15,5 @@ public interface CarrefourServeurInterface extends java.rmi.Remote{
     public CarrefourEtat getEtat() throws java.rmi.RemoteException;
     public void inscription(CarrefourClientInterface vue) throws java.rmi.RemoteException;
     public void desinscription(CarrefourClientInterface vue) throws java.rmi.RemoteException;
+    public void connect() throws java.rmi.RemoteException;
 }

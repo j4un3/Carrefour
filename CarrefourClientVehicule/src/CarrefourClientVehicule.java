@@ -6,9 +6,7 @@
 
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
 import be.esi.g34840.carrefour.gui.CarrefourClientVehiculeGUI;
-import be.esi.gui.outils.MsgOutils;
 import consoleaddition.LocalisationDialog;
-import java.rmi.RemoteException;
 
 /**
  *
