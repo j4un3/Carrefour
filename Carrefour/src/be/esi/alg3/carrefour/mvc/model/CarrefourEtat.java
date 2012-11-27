@@ -14,10 +14,8 @@ import java.io.Serializable;
 public class CarrefourEtat implements Serializable {
 
     private FeuEnum[] feux;
-    public static int FEUX_PIETON_N_S = 3;
-    public static int FEUX_PIETON_E_O = 2;
-    public static int FEUX_VEHICULE_N_S = 0;
-    public static int FEUX_VEHICULE_E_O = 1;
+    public static int FEUX_PIETON_N_S = 3, FEUX_PIETON_E_O = 2,
+            FEUX_VEHICULE_E_O = 1, FEUX_VEHICULE_N_S = 0;
 
     public CarrefourEtat() {
         feux = new FeuEnum[4];

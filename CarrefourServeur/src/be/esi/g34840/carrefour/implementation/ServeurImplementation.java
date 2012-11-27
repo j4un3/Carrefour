@@ -24,7 +24,12 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
     private List<CarrefourClientInterface> views;
 
     public ServeurImplementation() throws RemoteException {
-        model = new Carrefour(10, 5, 12);
+        int[] rouge,orange,vert,rougeCommun;
+        vert = new int[]{5,5,5,5};
+        orange = new int[]{3,3,3,3};
+        rouge = new int[]{6,6,6,6};
+        rougeCommun = new int[]{2,2,2,2};
+        model = new Carrefour(vert,orange,rouge,rougeCommun);
         views = new ArrayList<CarrefourClientInterface>();
         model.inscription(this);
     }

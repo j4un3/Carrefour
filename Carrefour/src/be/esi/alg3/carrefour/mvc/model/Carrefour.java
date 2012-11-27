@@ -17,39 +17,35 @@ import java.util.TimerTask;
  */
 public class Carrefour {
 
-    public static int FEUX_PIETON_N_S = 3;
-    public static int FEUX_PIETON_E_O = 2;
-    public static int FEUX_VEHICULE_N_S = 0;
-    public static int FEUX_VEHICULE_E_O = 1;
-    public static int VERT = 0;
-    public static int ORANGE = 1;
-    public static int ROUGE = 2;
+    public static int FEUX_PIETON_N_S = 3, FEUX_PIETON_E_O = 2,
+            FEUX_VEHICULE_E_O = 1, FEUX_VEHICULE_N_S = 0;
     private CarrefourEtat etat;
     private Timer timer;
     private boolean warning;
-    private int[] timers;
     private int cptTest;
-    private int vertTimer;
-    private int orangeTimer;
-    private int rougeTimer;
+    private int[] vertTimer, saveTimerVert, orangeTimer, saveTimerOrange, rougeTimer,
+            saveTimerRouge, rougeCommunTimer, saveRougeCommunTimer;
     private List<CarrefourVueInterface> views;
 
-    public Carrefour(int vert, int orange, int rouge) {
+    public Carrefour(int[] vert, int[] orange, int[] rouge, int[] rougeCommun) {
         views = new ArrayList<CarrefourVueInterface>();
         etat = new CarrefourEtat();
-        timers = new int[4];
-        this.orangeTimer = orange;
-        this.vertTimer = vert;
-        this.rougeTimer = rouge;
+        this.saveTimerOrange = orange;
+        this.saveTimerRouge = rouge;
+        this.saveTimerVert = vert;
         warning = false;
         this.reset();
+        vitesseExec(1000);
+    }
+
+    public void vitesseExec(int ms) {
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 changeEtat();
             }
-        }, 0, 1000);
+        }, 0, ms);
     }
 
     public CarrefourEtat getEtat() {
@@ -67,20 +63,20 @@ public class Carrefour {
     }
 
     private void changeEtat() {
-        if (timers[0] > 1 || timers[1] > 1 || timers[2] > 0) {
-            switch (etat.getFeux(FEUX_VEHICULE_N_S).getValue()) {
+        for (int i = 0; i < 4; i++) {
+            switch (etat.getFeux(i).getValue()) {
                 case 0:
-                    vert();
+                    vert(i);
                     break;
                 case 1:
-                    orange();
+                    orange(i);
                     break;
                 case 2:
-                    rouge();
+                    rouge(i);
                     break;
+                case 3:
+                    orange(i);
             }
-        } else {
-            reset();
         }
         System.out.println(toString());
         fire();
@@ -114,42 +110,33 @@ public class Carrefour {
         return str;
     }
 
-    private void vert() {
-        etat.setFeux(FEUX_PIETON_E_O, FeuEnum.VERT);
-        if (timers[VERT] <= (vertTimer / 3)) {
-            etat.setFeux(FEUX_PIETON_E_O, FeuEnum.VERT_CLIGNOTANT);
-        }
-        if (--timers[VERT] < 1) {
-            etat.setFeux(FEUX_VEHICULE_N_S, FeuEnum.ORANGE);
-            etat.setFeux(FEUX_PIETON_E_O, FeuEnum.ROUGE);
-        }
-    }
-
-    private void orange() {
-        if (--timers[ORANGE] < 1) {
-            etat.setFeux(FEUX_VEHICULE_N_S, FeuEnum.ROUGE);
+    private void vert(int pos) {
+        if (--vertTimer[pos] < 1) {
+            if (pos == FEUX_PIETON_E_O || pos == FEUX_PIETON_N_S) {
+                etat.setFeux(pos, FeuEnum.VERT_CLIGNOTANT);
+            } else {
+                etat.setFeux(pos, FeuEnum.ORANGE);
+            }
         }
     }
 
-    private void rouge() {
-        etat.setFeux(FEUX_VEHICULE_E_O, FeuEnum.VERT);
-        etat.setFeux(FEUX_PIETON_N_S, FeuEnum.VERT);
-        if (timers[ROUGE] <= (rougeTimer / 3)) {
-            etat.setFeux(FEUX_PIETON_N_S, FeuEnum.VERT_CLIGNOTANT);
+    private void orange(int pos) {
+        if (--orangeTimer[pos] < 1) {
+            etat.setFeux(pos, FeuEnum.ROUGE);
         }
-        if (timers[ROUGE] <= (rougeTimer / 4)) {
-            etat.setFeux(FEUX_VEHICULE_E_O, FeuEnum.ORANGE);
-            etat.setFeux(FEUX_PIETON_N_S, FeuEnum.ROUGE);
-        }
-        if (--timers[ROUGE] < 1) {
-            etat.setFeux(FEUX_VEHICULE_E_O, FeuEnum.ROUGE);
+    }
+
+    private void rouge(int pos) {
+        if (--rougeTimer[pos] < 1) {
+            etat.setFeux(pos, FeuEnum.VERT);
+            resetTimer(pos);
         }
     }
 
     private void reset() {
-        timers[VERT] = this.vertTimer;
-        timers[ORANGE] = this.orangeTimer;
-        timers[ROUGE] = this.rougeTimer;
+        this.orangeTimer = this.saveTimerOrange.clone();
+        this.vertTimer = this.saveTimerVert.clone();
+        this.rougeTimer = this.saveTimerRouge.clone();
         etat.setFeux(FEUX_PIETON_N_S, FeuEnum.ROUGE);
         etat.setFeux(FEUX_PIETON_E_O, FeuEnum.ROUGE);
         etat.setFeux(FEUX_VEHICULE_N_S, FeuEnum.VERT);
@@ -160,5 +147,11 @@ public class Carrefour {
         for (CarrefourVueInterface vue : views) {
             vue.update();
         }
+    }
+
+    private void resetTimer(int pos) {
+        vertTimer[pos] = this.saveTimerVert[pos];
+        orangeTimer[pos] = this.saveTimerOrange[pos];
+        rougeTimer[pos] = this.saveTimerRouge[pos];
     }
 }

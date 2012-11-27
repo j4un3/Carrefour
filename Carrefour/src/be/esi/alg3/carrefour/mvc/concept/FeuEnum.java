@@ -12,15 +12,16 @@ import java.awt.Color;
  */
 public enum FeuEnum {
 
-    VERT("Vert", 0,Color.GREEN),
-    ORANGE("Orange", 1,Color.ORANGE),
-    ROUGE("Rouge", 2,Color.RED),
-    VERT_CLIGNOTANT("Vert clignotant", 3,Color.GRAY),
-    ETEINT("Eteint", 4,Color.white),
-    WARNING("WARNING", 5,Color.PINK);
+    VERT("Vert", 0, Color.GREEN),
+    ORANGE("Orange", 1, Color.ORANGE),
+    ROUGE("Rouge", 2, Color.RED),
+    VERT_CLIGNOTANT("Vert clignotant", 3, Color.GRAY),
+    ETEINT("Eteint", 4, Color.white),
+    WARNING("WARNING", 5, Color.PINK);
     private String libelle;
     private int value;
     private Color color;
+
     private FeuEnum(String libelle, int feu, Color color) {
         this.libelle = libelle;
         this.value = feu;
@@ -34,7 +35,8 @@ public enum FeuEnum {
     public int getValue() {
         return value;
     }
-    public Color getColor(){
+
+    public Color getColor() {
         return color;
     }
 }
