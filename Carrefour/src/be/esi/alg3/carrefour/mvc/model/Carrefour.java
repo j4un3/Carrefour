@@ -138,7 +138,7 @@ public class Carrefour {
         this.vertTimer = this.saveTimerVert.clone();
         this.rougeTimer = this.saveTimerRouge.clone();
         etat.setFeux(FEUX_PIETON_N_S, FeuEnum.ROUGE);
-        etat.setFeux(FEUX_PIETON_E_O, FeuEnum.ROUGE);
+        etat.setFeux(FEUX_PIETON_E_O, FeuEnum.VERT);
         etat.setFeux(FEUX_VEHICULE_N_S, FeuEnum.VERT);
         etat.setFeux(FEUX_VEHICULE_E_O, FeuEnum.ROUGE);
     }

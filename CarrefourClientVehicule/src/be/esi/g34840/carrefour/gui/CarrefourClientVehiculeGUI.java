@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -82,6 +83,9 @@ public class CarrefourClientVehiculeGUI extends JDialog {
                     }
                 }
             });
+                  } catch (ConnectException ex){
+                MsgOutils.erreur("ConnecException", "Problème de connection. L'application va se fermer.");
+                    System.exit(0);
         } catch (RemoteException ex) {
             MsgOutils.erreur("Client RemoteException", ex.getMessage());
             System.exit(0);

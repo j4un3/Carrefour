@@ -27,7 +27,7 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
         int[] rouge,orange,vert,rougeCommun;
         vert = new int[]{5,5,5,5};
         orange = new int[]{3,3,3,3};
-        rouge = new int[]{6,6,6,6};
+        rouge = new int[]{5,5,5,5};
         rougeCommun = new int[]{2,2,2,2};
         model = new Carrefour(vert,orange,rouge,rougeCommun);
         views = new ArrayList<CarrefourClientInterface>();

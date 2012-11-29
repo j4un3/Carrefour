@@ -4,10 +4,18 @@
  */
 package be.esi.g34840.carrefour.gui;
 
+import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
+import be.esi.g348440.carrefour.implementation.VueCarrefourClientAdministrateur;
+import be.esi.gui.outils.MsgOutils;
+import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.rmi.ConnectException;
+import java.rmi.RemoteException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,12 +27,16 @@ import javax.swing.JFrame;
  */
 public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
 
+    public static int FEUX_PIETON_N_S = 3, FEUX_PIETON_E_O = 2,
+            FEUX_VEHICULE_E_O = 1, FEUX_VEHICULE_N_S = 0;
     private CarrefourServeurInterface serveur;
-    private  Properties defaultProps;
+    private VueCarrefourClientAdministrateur client;
+    private Properties defaultProps;
+
     /**
      * Creates new form CarrefourClientAdministrateurGUI
      */
-    public CarrefourClientAdministrateurGUI(CarrefourServeurInterface serveur) {
+    public CarrefourClientAdministrateurGUI(final CarrefourServeurInterface serveur) {
         super(new JFrame(), true);
         FileInputStream in = null;
         try {
@@ -32,19 +44,42 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             defaultProps = new Properties();
             in = new FileInputStream("../CarrefourInterface.properties");
             defaultProps.load(in);
+            client = new VueCarrefourClientAdministrateur(this);
+            this.serveur.inscription(client);
             initComponents();
-
+            avertissementL.setText("Les durées sont calculées en secondes et "
+                    + "leur valeur doit être comprise entre "
+                    + defaultProps.getProperty("minValue") + " et "
+                    + defaultProps.getProperty("maxValue") + " secondes.");
+            avertissementL.setForeground(Color.RED);
+        } catch (ConnectException ex) {
+            MsgOutils.erreur("ConnecException", "Problème de connection. L'application va se fermer.");
+            System.exit(0);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(CarrefourClientAdministrateurGUI.class.getName()).log(Level.SEVERE, null, ex);
+            MsgOutils.erreur("FileNotFoundException", "Fichier de configuration introuvable.");
         } catch (IOException ex) {
-            Logger.getLogger(CarrefourClientAdministrateurGUI.class.getName()).log(Level.SEVERE, null, ex);
+            MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
+            saveB.setEnabled(false);
         } finally {
             try {
                 in.close();
             } catch (IOException ex) {
-                Logger.getLogger(CarrefourClientAdministrateurGUI.class.getName()).log(Level.SEVERE, null, ex);
+                MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
+                saveB.setEnabled(false);
             }
         }
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    serveur.desinscription(client);
+                    System.exit(0);
+                } catch (RemoteException ex) {
+                    MsgOutils.erreur("RemoteException", ex.getMessage());
+                    System.exit(0);
+                }
+            }
+        });
 
     }
 
@@ -60,37 +95,251 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSlider1 = new javax.swing.JSlider();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        previsualB = new javax.swing.JButton();
+        saveB = new javax.swing.JButton();
+        avertissementL = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        visualB = new javax.swing.JButton();
+        feuVehiculeNSL = new javax.swing.JLabel();
+        feuVehiculeEOL = new javax.swing.JLabel();
+        feuPietonNSL = new javax.swing.JLabel();
+        feuPietonEOL = new javax.swing.JLabel();
+        historiqueB = new javax.swing.JButton();
+        cycleB = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jSlider1.setMajorTickSpacing(5);
-        jSlider1.setMaximum(Integer.parseInt(defaultProps.getProperty("maxValue")));
-        jSlider1.setMinimum(Integer.parseInt(defaultProps.getProperty("minValue")));
-        jSlider1.setMinorTickSpacing(1);
-        jSlider1.setPaintTicks(true);
-        jSlider1.setSnapToTicks(true);
-        jSlider1.setValue(10);
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuration d'un carrefour"));
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Feu véhicule Nord-Sud", null, null, null, null},
+                {"Feu véhicule Est-Ouest", null, null, null, null},
+                {"Feu piéton Nord-sud", null, null, null, null},
+                {"Feu piéton Est-Ouest", null, null, null, null}
+            },
+            new String [] {
+                "Feux", "Vert", "Orange", "Rouge", "Rouge Commun"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, true, true, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.setAutoscrolls(false);
+        jScrollPane1.setViewportView(jTable1);
+
+        previsualB.setText("Prévisualiser");
+        previsualB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previsualBActionPerformed(evt);
+            }
+        });
+
+        saveB.setText("Sauvegarder");
+        saveB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBActionPerformed(evt);
+            }
+        });
+
+        avertissementL.setText("1");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 711, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(204, 204, 204)
+                        .addComponent(previsualB)
+                        .addGap(56, 56, 56)
+                        .addComponent(saveB))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(85, 85, 85)
+                        .addComponent(avertissementL)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(avertissementL)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(previsualB)
+                    .addComponent(saveB)))
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Carrefour contrôle"));
+
+        jLabel1.setText("Feu véhicule Nord-Sud :");
+
+        jLabel2.setText("Feu véhicule Est-Ouest :");
+
+        jLabel3.setText("Feu piéton Nord-Sud :");
+
+        jLabel4.setText("Feu piéton Est-Ouest :");
+
+        visualB.setText("Visualiser");
+        visualB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                visualBActionPerformed(evt);
+            }
+        });
+
+        historiqueB.setText("Historique");
+
+        cycleB.setText("Warning");
+        cycleB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cycleBActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(feuPietonEOL)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(feuVehiculeEOL)
+                                    .addComponent(feuPietonNSL))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(visualB)
+                                .addGap(29, 29, 29)
+                                .addComponent(cycleB)
+                                .addGap(18, 18, 18)
+                                .addComponent(historiqueB))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(feuVehiculeNSL)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(feuVehiculeNSL))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(visualB)
+                        .addComponent(historiqueB)
+                        .addComponent(cycleB))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(feuVehiculeEOL))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(feuPietonNSL))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(feuPietonEOL))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(159, Short.MAX_VALUE)
-                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41))
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(246, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void previsualBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previsualBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_previsualBActionPerformed
+
+    private void visualBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualBActionPerformed
+        try {
+            CarrefourEtat etat = serveur.getEtat();
+            feuVehiculeNSL.setText(etat.getFeux(FEUX_PIETON_N_S).getLibelle());
+            feuVehiculeEOL.setText(etat.getFeux(FEUX_VEHICULE_E_O).getLibelle());
+            feuPietonEOL.setText(etat.getFeux(FEUX_PIETON_E_O).getLibelle());
+            feuPietonNSL.setText(etat.getFeux(FEUX_PIETON_N_S).getLibelle());
+        } catch (RemoteException ex) {
+            MsgOutils.erreur("RemoteException", "Vous avez perdu la connection avec le serveur. L'application va se fermer ...");
+            System.exit(0);
+        }
+    }//GEN-LAST:event_visualBActionPerformed
+
+    private void cycleBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cycleBActionPerformed
+        try {
+            serveur.warning(cycleB.isSelected());
+            cycleB.setText(cycleB.isSelected() ? "Cycle normal" : "Warning");
+        } catch (RemoteException ex) {
+            MsgOutils.erreur("RemoteException", "Vous avez perdu la connection avec le serveur. L'application va se fermer ...");
+            System.exit(0);
+        }
+    }//GEN-LAST:event_cycleBActionPerformed
+
+    private void saveBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBActionPerformed
+        defaultProps.setProperty("v1", (String) jTable1.getValueAt(0, 1));
+        defaultProps.setProperty("v2", (String) jTable1.getValueAt(1, 1));
+        defaultProps.setProperty("vp1", (String) jTable1.getValueAt(2, 1));
+        defaultProps.setProperty("vp2", (String) jTable1.getValueAt(3, 1));
+        defaultProps.setProperty("o1", (String) jTable1.getValueAt(0, 2));
+        defaultProps.setProperty("o2", (String) jTable1.getValueAt(1, 2));
+        defaultProps.setProperty("op1", (String) jTable1.getValueAt(2, 2));
+        defaultProps.setProperty("op2", (String) jTable1.getValueAt(3, 2));
+        defaultProps.setProperty("r1", (String) jTable1.getValueAt(0, 3));
+        defaultProps.setProperty("r2", (String) jTable1.getValueAt(1, 3));
+        defaultProps.setProperty("rp1", (String) jTable1.getValueAt(2, 3));
+        defaultProps.setProperty("rp2", (String) jTable1.getValueAt(3, 3));
+    }//GEN-LAST:event_saveBActionPerformed
 
     /**
      * @param args the command line arguments
@@ -134,6 +383,23 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSlider jSlider1;
+    private javax.swing.JLabel avertissementL;
+    private javax.swing.JToggleButton cycleB;
+    private javax.swing.JLabel feuPietonEOL;
+    private javax.swing.JLabel feuPietonNSL;
+    private javax.swing.JLabel feuVehiculeEOL;
+    private javax.swing.JLabel feuVehiculeNSL;
+    private javax.swing.JButton historiqueB;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JButton previsualB;
+    private javax.swing.JButton saveB;
+    private javax.swing.JButton visualB;
     // End of variables declaration//GEN-END:variables
 }
