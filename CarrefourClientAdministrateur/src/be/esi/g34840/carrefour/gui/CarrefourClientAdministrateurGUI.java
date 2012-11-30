@@ -42,10 +42,8 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             defaultProps = new Properties();
             in = new FileInputStream("../CarrefourInterface.properties");
             defaultProps.load(in);
-                        initComponents();
-
+            initComponents();
             client = new VueCarrefourClientAdministrateur(this);
-
             this.serveur.inscription(client);
             avertissementL.setText("Les durées sont calculées en secondes et "
                     + "leur valeur doit être comprise entre "

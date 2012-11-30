@@ -114,7 +114,12 @@ public class CarrefourClientVehiculeGUI extends JDialog {
     }
 
     public void update() throws RemoteException {
+        if(serveur.getEtat().getFeux(FEUX_VEHICULE_N_S).getColor().equals(Color.BLACK)){
+            setFeuWarning();
+        }
+        else{
         leds[FEUX_VEHICULE_N_S].setColor(serveur.getEtat().getFeux(FEUX_VEHICULE_N_S).getColor());
         leds[FEUX_VEHICULE_E_O].setColor(serveur.getEtat().getFeux(FEUX_VEHICULE_E_O).getColor());
+        }
     }
 }

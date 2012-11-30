@@ -17,7 +17,7 @@ public enum FeuEnum {
     ROUGE("Rouge", 2, Color.RED),
     VERT_CLIGNOTANT("Vert clignotant", 3, Color.GRAY),
     ETEINT("Eteint", 4, Color.white),
-    WARNING("WARNING", 5, Color.PINK);
+    WARNING("WARNING", 5, Color.BLACK);
     private String libelle;
     private int value;
     private Color color;

@@ -35,6 +35,7 @@ public class CarrefourClientPietonGUI extends JDialog {
     private VueCarrefourClientPieton client;
     private Timer timer;
     private TimerTask timerTask;
+    private static int cptTest;
 
     public CarrefourClientPietonGUI(final CarrefourServeurInterface serveur) {
         super(new JFrame(), true);
@@ -81,9 +82,9 @@ public class CarrefourClientPietonGUI extends JDialog {
                     }
                 }
             });
-                  } catch (ConnectException ex){
-                MsgOutils.erreur("ConnecException", "Problème de connection. L'application va se fermer.");
-                    System.exit(0);
+        } catch (ConnectException ex) {
+            MsgOutils.erreur("ConnecException", "Problème de connection. L'application va se fermer.");
+            System.exit(0);
         } catch (RemoteException ex) {
             MsgOutils.erreur("Client RemoteException", ex.getMessage());
             System.exit(0);
@@ -92,12 +93,37 @@ public class CarrefourClientPietonGUI extends JDialog {
 
     private void warning() {
         timerTask.cancel();
-        leds[(FEUX_PIETON_N_S % 2)].setColor(Color.white);
-        leds[(FEUX_PIETON_E_O % 2)].setColor(Color.white);
+        setFeuWarning();
+
+    }
+
+    private void setFeuVertClignotant(int feu) {
+        System.out.println("HELLO");
+        System.out.println(cptTest);
+        if ((cptTest++) % 2 == 0) {
+            leds[(feu % 2)].setColor(Color.green);
+        } else {
+            leds[(feu % 2)].setColor(Color.white);
+        }
     }
 
     public void update() throws RemoteException {
-        leds[(FEUX_PIETON_N_S % 2)].setColor(serveur.getEtat().getFeux(FEUX_PIETON_N_S).getColor());
-        leds[(FEUX_PIETON_E_O % 2)].setColor(serveur.getEtat().getFeux(FEUX_PIETON_E_O).getColor());
+        if (serveur.getEtat().getFeux(FEUX_PIETON_E_O).getColor().equals(Color.BLACK)) {
+            setFeuWarning();
+        } else if (serveur.getEtat().getFeux(FEUX_PIETON_N_S).getColor().equals(Color.GRAY)) {
+            leds[(FEUX_PIETON_N_S % 2)].setColor(serveur.getEtat().getFeux(FEUX_PIETON_E_O).getColor());
+            setFeuVertClignotant(FEUX_PIETON_N_S);
+        } else if (serveur.getEtat().getFeux(FEUX_PIETON_E_O).getColor().equals(Color.GRAY)) {
+            leds[(FEUX_PIETON_N_S % 2)].setColor(serveur.getEtat().getFeux(FEUX_PIETON_N_S).getColor());
+            setFeuVertClignotant(FEUX_PIETON_E_O);
+        } else {
+            leds[(FEUX_PIETON_N_S % 2)].setColor(serveur.getEtat().getFeux(FEUX_PIETON_N_S).getColor());
+            leds[(FEUX_PIETON_E_O % 2)].setColor(serveur.getEtat().getFeux(FEUX_PIETON_E_O).getColor());
+        }
+    }
+
+    private void setFeuWarning() {
+        leds[(FEUX_PIETON_N_S % 2)].setColor(Color.white);
+        leds[(FEUX_PIETON_E_O % 2)].setColor(Color.white);
     }
 }
