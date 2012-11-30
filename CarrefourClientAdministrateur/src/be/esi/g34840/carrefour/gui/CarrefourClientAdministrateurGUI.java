@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -44,9 +42,11 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             defaultProps = new Properties();
             in = new FileInputStream("../CarrefourInterface.properties");
             defaultProps.load(in);
+                        initComponents();
+
             client = new VueCarrefourClientAdministrateur(this);
+
             this.serveur.inscription(client);
-            initComponents();
             avertissementL.setText("Les durées sont calculées en secondes et "
                     + "leur valeur doit être comprise entre "
                     + defaultProps.getProperty("minValue") + " et "
@@ -80,10 +80,19 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 }
             }
         });
-
     }
 
     public void update() {
+        try {
+            CarrefourEtat etat = serveur.getEtat();
+            feuVehiculeNSL.setText(etat.getFeux(FEUX_VEHICULE_N_S).getLibelle());
+            feuVehiculeEOL.setText(etat.getFeux(FEUX_VEHICULE_E_O).getLibelle());
+            feuPietonEOL.setText(etat.getFeux(FEUX_PIETON_E_O).getLibelle());
+            feuPietonNSL.setText(etat.getFeux(FEUX_PIETON_N_S).getLibelle());
+        } catch (RemoteException ex) {
+            MsgOutils.erreur("RemoteException", "Vous avez perdu la connection avec le serveur. L'application va se fermer ...");
+            System.exit(0);
+        }
     }
 
     /**
@@ -106,7 +115,6 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        visualB = new javax.swing.JButton();
         feuVehiculeNSL = new javax.swing.JLabel();
         feuVehiculeEOL = new javax.swing.JLabel();
         feuPietonNSL = new javax.swing.JLabel();
@@ -120,20 +128,20 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Feu véhicule Nord-Sud", null, null, null, null},
-                {"Feu véhicule Est-Ouest", null, null, null, null},
-                {"Feu piéton Nord-sud", null, null, null, null},
-                {"Feu piéton Est-Ouest", null, null, null, null}
+                {"Feu véhicule Nord-Sud", null, null, null},
+                {"Feu véhicule Est-Ouest", null, null, null},
+                {"Feu piéton Nord-sud", null, null, null},
+                {"Feu piéton Est-Ouest", null, null, null}
             },
             new String [] {
-                "Feux", "Vert", "Orange", "Rouge", "Rouge Commun"
+                "Feux", "Vert", "Orange", "Rouge"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, true, true, false
+                false, true, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -171,30 +179,29 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 711, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(204, 204, 204)
-                        .addComponent(previsualB)
-                        .addGap(56, 56, 56)
-                        .addComponent(saveB))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(85, 85, 85)
-                        .addComponent(avertissementL)))
+                .addGap(85, 85, 85)
+                .addComponent(avertissementL)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(previsualB)
+                .addGap(18, 18, 18)
+                .addComponent(saveB)
+                .addGap(106, 106, 106))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(avertissementL)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(previsualB)
                     .addComponent(saveB)))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Carrefour contrôle"));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Carrefour contrôle en temps réel"));
 
         jLabel1.setText("Feu véhicule Nord-Sud :");
 
@@ -204,12 +211,13 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
 
         jLabel4.setText("Feu piéton Est-Ouest :");
 
-        visualB.setText("Visualiser");
-        visualB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                visualBActionPerformed(evt);
-            }
-        });
+        feuVehiculeNSL.setText("1");
+
+        feuVehiculeEOL.setText("1");
+
+        feuPietonNSL.setText("1");
+
+        feuPietonEOL.setText("1");
 
         historiqueB.setText("Historique");
 
@@ -231,27 +239,22 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(feuPietonEOL)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(feuVehiculeEOL, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(feuPietonNSL))
+                        .addGap(89, 89, 89)
+                        .addComponent(cycleB, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(historiqueB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(122, 122, 122))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(feuVehiculeEOL)
-                                    .addComponent(feuPietonNSL))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(visualB)
-                                .addGap(29, 29, 29)
-                                .addComponent(cycleB)
-                                .addGap(18, 18, 18)
-                                .addComponent(historiqueB))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(feuVehiculeNSL)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                            .addComponent(feuVehiculeNSL)
+                            .addComponent(feuPietonEOL))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -263,18 +266,17 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(visualB)
                         .addComponent(historiqueB)
                         .addComponent(cycleB))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(feuVehiculeEOL))
+                            .addComponent(feuVehiculeEOL, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(feuPietonNSL))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(feuPietonEOL))
@@ -285,9 +287,14 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 727, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jPanel1, jPanel2});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -302,19 +309,6 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     private void previsualBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previsualBActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_previsualBActionPerformed
-
-    private void visualBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualBActionPerformed
-        try {
-            CarrefourEtat etat = serveur.getEtat();
-            feuVehiculeNSL.setText(etat.getFeux(FEUX_PIETON_N_S).getLibelle());
-            feuVehiculeEOL.setText(etat.getFeux(FEUX_VEHICULE_E_O).getLibelle());
-            feuPietonEOL.setText(etat.getFeux(FEUX_PIETON_E_O).getLibelle());
-            feuPietonNSL.setText(etat.getFeux(FEUX_PIETON_N_S).getLibelle());
-        } catch (RemoteException ex) {
-            MsgOutils.erreur("RemoteException", "Vous avez perdu la connection avec le serveur. L'application va se fermer ...");
-            System.exit(0);
-        }
-    }//GEN-LAST:event_visualBActionPerformed
 
     private void cycleBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cycleBActionPerformed
         try {
@@ -400,6 +394,5 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     private javax.swing.JTable jTable1;
     private javax.swing.JButton previsualB;
     private javax.swing.JButton saveB;
-    private javax.swing.JButton visualB;
     // End of variables declaration//GEN-END:variables
 }

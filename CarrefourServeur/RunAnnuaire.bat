@@ -1,2 +1,3 @@
-set classpath=%classpath%;C:\DOCUME~1\g34840\MYDOCU~1\NetBeansProjects\Carrefour\CarrefourInterface\build\classes;C:\DOCUME~1\g34840\MYDOCU~1\NetBeansProjects\Carrefour\Carrefour\build\classes;C:\DOCUME~1\g34840\MYDOCU~1\NetBeansProjects\Carrefour\CarrefourServeur\build\classes;
+set classpath=%classpath%;C:\DOCUME~1\g34840\MYDOCU~1\NetBeansProjects\Carrefour\CarrefourInterface\build\classes;C:\DOCUME~1\g34840\MYDOCU~1\NetBeansProjects\Carrefour\Carrefour\build\classes;C:\DOCUME~1\g34840\MYDOCU~1\NetBeansProjects\Carrefour\CarrefourServeur\build\classes;C:\DOCUME~1\g34840\MYDOCU~1\NetBeansProjects\Carrefour\CarrefourClientPieton\build\classes;C:\DOCUME~1\g34840\MYDOCU~1\NetBeansProjects\Carrefour\CarrefourVehiculeClient\build\classes;;C:\DOCUME~1\g34840\MYDOCU~1\NetBeansProjects\Carrefour\CarrefourClientAdministrateur\build\classes
+
 "C:\Program Files\Java\jdk1.6.0_23\bin\rmiregistry"

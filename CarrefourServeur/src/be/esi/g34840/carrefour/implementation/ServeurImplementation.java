@@ -10,9 +10,14 @@ import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
 import be.esi.g34840.carrefour.business.CarrefourClientInterface;
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
 import be.esi.gui.outils.MsgOutils;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,16 +27,53 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
 
     private Carrefour model;
     private List<CarrefourClientInterface> views;
+    private Properties defaultProps;
+    private FileInputStream in;
+    private int[] rouge, orange, vert, rougeCommun;
 
     public ServeurImplementation() throws RemoteException {
-        int[] rouge,orange,vert,rougeCommun;
-        vert = new int[]{5,5,5,5};
-        orange = new int[]{3,3,3,3};
-        rouge = new int[]{5,5,5,5};
-        rougeCommun = new int[]{2,2,2,2};
-        model = new Carrefour(vert,orange,rouge,rougeCommun);
+        try {
+            defaultProps = new Properties();
+            in = new FileInputStream("../CarrefourInterface.properties");
+            defaultProps.load(in);
+            vert = new int[]{Integer.parseInt((String) defaultProps.getProperty("v1")),
+                Integer.parseInt((String) defaultProps.get("v2")),
+                Integer.parseInt((String) defaultProps.getProperty("vp1")),
+                Integer.parseInt((String) defaultProps.getProperty("vp2"))};
+            orange = new int[]{Integer.parseInt((String) defaultProps.getProperty("o1")),
+                Integer.parseInt((String) defaultProps.get("o2")),
+                Integer.parseInt((String) defaultProps.getProperty("op1")),
+                Integer.parseInt((String) defaultProps.getProperty("op2"))};
+            rouge = new int[]{Integer.parseInt((String) defaultProps.getProperty("r1")),
+                Integer.parseInt((String) defaultProps.get("r2")),
+                Integer.parseInt((String) defaultProps.getProperty("rp1")),
+                Integer.parseInt((String) defaultProps.getProperty("rp2"))};
+            rougeCommun = new int[]{Integer.parseInt((String) defaultProps.getProperty("rc1")),
+                Integer.parseInt((String) defaultProps.get("rc2")),
+                Integer.parseInt((String) defaultProps.getProperty("rpc11")),
+                Integer.parseInt((String) defaultProps.getProperty("rpc12")),
+                Integer.parseInt((String) defaultProps.getProperty("rpc22")),
+                Integer.parseInt((String) defaultProps.getProperty("rpc21")),};
+        } catch (FileNotFoundException ex) {
+            MsgOutils.erreur("FileNotFoundException", "Fichier de configuration "
+                    + "introuvable.\n Le serveur sera lancé avec une configuration par défaut.");
+            defaultInit();
+        } catch (IOException ex) {
+            MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du"
+                    + " fichier de configuration s'est mal passée."
+                    + "\n Le serveur sera lancé avec une configuration par défaut.");
+            defaultInit();
+        }
+        model = new Carrefour(vert, orange, rouge, rougeCommun);
         views = new ArrayList<CarrefourClientInterface>();
         model.inscription(this);
+    }
+
+    private void defaultInit() {
+        vert = new int[]{5, 5, 5, 5};
+        orange = new int[]{3, 3, 3, 3};
+        rouge = new int[]{5, 5, 5, 5};
+        rougeCommun = new int[]{2, 2, 2, 2, 2, 2};
     }
 
     private void fire() {
