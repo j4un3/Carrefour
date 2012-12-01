@@ -17,7 +17,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 /**
  *
@@ -64,15 +63,16 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
                     + "\n Le serveur sera lancé avec une configuration par défaut.");
             defaultInit();
         }
-        model = new Carrefour(vert, orange, rouge, rougeCommun);
+        int rougeCommun1 = rougeCommun[0];
+        model = new Carrefour(vert, orange, rouge, rougeCommun1,1000);
         views = new ArrayList<CarrefourClientInterface>();
         model.inscription(this);
     }
 
     private void defaultInit() {
-        vert = new int[]{5, 5, 5, 5};
-        orange = new int[]{3, 3, 3, 3};
-        rouge = new int[]{5, 5, 5, 5};
+        vert = new int[]{10, 10, 10, 10};
+        orange = new int[]{5, 5, 5, 5};
+        rouge = new int[]{15, 15, 15, 15};
         rougeCommun = new int[]{2, 2, 2, 2, 2, 2};
     }
 
@@ -114,6 +114,6 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
     }
 
     @Override
-    public void connect() throws RemoteException {
+    public void isAlive() throws RemoteException {
     }
 }

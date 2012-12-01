@@ -26,8 +26,8 @@ import javax.swing.JPanel;
  */
 public class CarrefourClientPietonGUI extends JDialog {
 
-    public static int FEUX_PIETON_N_S = 3;
-    public static int FEUX_PIETON_E_O = 2;
+    public static int FEUX_PIETON_N_S = 2;
+    public static int FEUX_PIETON_E_O = 3;
     private Led[] leds;
     private CarrefourServeurInterface serveur;
     private JPanel led1P;
@@ -44,7 +44,7 @@ public class CarrefourClientPietonGUI extends JDialog {
             @Override
             public void run() {
                 try {
-                    serveur.connect();
+                    serveur.isAlive();
                 } catch (RemoteException ex) {
                     warning();
                 }
@@ -98,12 +98,11 @@ public class CarrefourClientPietonGUI extends JDialog {
     }
 
     private void setFeuVertClignotant(int feu) {
-        System.out.println("HELLO");
         System.out.println(cptTest);
         if ((cptTest++) % 2 == 0) {
             leds[(feu % 2)].setColor(Color.green);
         } else {
-            leds[(feu % 2)].setColor(Color.white);
+            leds[(feu % 2)].setColor(Color.black);
         }
     }
 
@@ -123,7 +122,7 @@ public class CarrefourClientPietonGUI extends JDialog {
     }
 
     private void setFeuWarning() {
-        leds[(FEUX_PIETON_N_S % 2)].setColor(Color.white);
-        leds[(FEUX_PIETON_E_O % 2)].setColor(Color.white);
+        leds[(FEUX_PIETON_N_S % 2)].setColor(Color.black);
+        leds[(FEUX_PIETON_E_O % 2)].setColor(Color.black);
     }
 }

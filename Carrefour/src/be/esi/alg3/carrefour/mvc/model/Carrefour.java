@@ -15,9 +15,9 @@ import java.util.TimerTask;
  *
  * @author g34840
  */
-public class Carrefour {
+public final class Carrefour {
 
-    public static int FEUX_PIETON_N_S = 3, FEUX_PIETON_E_O = 2,
+    public static int FEUX_PIETON_E_O = 3, FEUX_PIETON_N_S = 2,
             FEUX_VEHICULE_E_O = 1, FEUX_VEHICULE_N_S = 0;
     private CarrefourEtat etat;
     private Timer timer;
@@ -26,16 +26,21 @@ public class Carrefour {
     private int[] vertTimer, saveTimerVert, orangeTimer, saveTimerOrange, rougeTimer,
             saveTimerRouge, rougeCommunTimer, saveRougeCommunTimer;
     private List<CarrefourVueInterface> views;
+    private int rougeCommun;
+    private boolean ok;
 
-    public Carrefour(int[] vert, int[] orange, int[] rouge, int[] rougeCommun) {
+    public Carrefour(int[] vert, int[] orange, int[] rouge, int rougeCommun, int vitesseExecution) {
         views = new ArrayList<CarrefourVueInterface>();
         etat = new CarrefourEtat();
         this.saveTimerOrange = orange;
         this.saveTimerRouge = rouge;
         this.saveTimerVert = vert;
+        this.rougeCommun = rougeCommun;
+        this.saveTimerRouge[FEUX_VEHICULE_N_S]= this.saveTimerRouge[FEUX_VEHICULE_N_S] + rougeCommun;
+        this.saveTimerRouge[FEUX_PIETON_E_O]= this.saveTimerRouge[FEUX_PIETON_E_O] + rougeCommun;
         warning = false;
         this.reset();
-        vitesseExec(1000);
+        vitesseExec(vitesseExecution);
     }
 
     public void vitesseExec(int ms) {
@@ -123,6 +128,9 @@ public class Carrefour {
     private void orange(int pos) {
         if (--orangeTimer[pos] < 1) {
             etat.setFeux(pos, FeuEnum.ROUGE);
+            if (pos == 1 || pos == 2) {
+                rougeTimer[pos] = rougeTimer[pos] + rougeCommun;
+            }
         }
     }
 
