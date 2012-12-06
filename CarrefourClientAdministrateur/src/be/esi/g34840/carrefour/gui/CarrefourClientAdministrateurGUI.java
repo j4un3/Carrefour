@@ -6,18 +6,22 @@ package be.esi.g34840.carrefour.gui;
 
 import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
-import be.esi.g348440.carrefour.implementation.VueCarrefourClientAdministrateur;
+import be.esi.g34840.carrefour.implementation.VueCarrefourClientAdministrateur;
 import be.esi.gui.outils.MsgOutils;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.JFrame;
+import javax.swing.JTable;
 
 /**
  *
@@ -30,12 +34,28 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     private CarrefourServeurInterface serveur;
     private VueCarrefourClientAdministrateur client;
     private Properties defaultProps;
-
+    private TimerTask timerTask;
+    private Timer timer;
+    private Led led;
     /**
      * Creates new form CarrefourClientAdministrateurGUI
      */
     public CarrefourClientAdministrateurGUI(final CarrefourServeurInterface serveur) {
         super(new JFrame(), true);
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    serveur.isAlive();
+                } catch (RemoteException ex) {
+                    timerTask.cancel();
+                    MsgOutils.warning("Attention RemoteException", "Vous avez perdu la connection avec le serveur.\n La contrôle du carrefour en temps réel n'est plus disponible.\n Mais vous pouvez toujours configurer ou voir l'historique du carrefour.");
+                    cycleB.setEnabled(false);
+                }
+            }
+        };
+        timer.schedule(timerTask, 0, 5000);
         FileInputStream in = null;
         try {
             this.serveur = serveur;
@@ -45,12 +65,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             initComponents();
             client = new VueCarrefourClientAdministrateur(this);
             this.serveur.inscription(client);
-            avertissementL.setText("Les durées sont calculées en secondes et "
-                    + "leur valeur doit être comprise entre "
-                    + defaultProps.getProperty("minValue") + " et "
-                    + defaultProps.getProperty("maxValue") + " secondes.");
-            jSliderL.setText(defaultProps.getProperty("rc1") + " s");
-            avertissementL.setForeground(Color.RED);
+            init();
         } catch (ConnectException ex) {
             MsgOutils.erreur("ConnecException", "Problème de connection. L'application va se fermer.");
             System.exit(0);
@@ -81,6 +96,28 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         });
     }
 
+    private void init() {
+        avertissementL.setText("Les durées sont calculées en secondes et "
+                + "leur valeur doit être comprise entre "
+                + defaultProps.getProperty("minValue") + " et "
+                + defaultProps.getProperty("maxValue") + " secondes.");
+        jSliderL.setText(defaultProps.getProperty("rc1") + " s");
+        avertissementL.setForeground(Color.RED);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("v1")), 0, 1);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("v2")), 1, 1);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("vp1")), 2, 1);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("vp2")), 3, 1);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("o1")), 0, 2);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("o2")), 1, 2);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("op1")), 2, 2);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("op2")), 3, 2);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("r1")), 0, 3);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("r2")), 1, 3);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("rp1")), 2, 3);
+        jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("rp2")), 3, 3);
+
+    }
+
     public void update() {
         try {
             CarrefourEtat etat = serveur.getEtat();
@@ -89,8 +126,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             feuPietonEOL.setText(etat.getFeux(FEUX_PIETON_E_O).getLibelle());
             feuPietonNSL.setText(etat.getFeux(FEUX_PIETON_N_S).getLibelle());
         } catch (RemoteException ex) {
-            MsgOutils.erreur("RemoteException", "Vous avez perdu la connection avec le serveur. L'application va se fermer ...");
-            System.exit(0);
+            MsgOutils.erreur("RemoteException", "Vous avez perdu la connection avec le serveur.");
         }
     }
 
@@ -351,7 +387,9 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void previsualBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previsualBActionPerformed
-        // TODO add your handling code here:
+        PrevisualisationGUI pGUI = new PrevisualisationGUI(this);
+        pGUI.setVisible(true);
+        pGUI.pack();
     }//GEN-LAST:event_previsualBActionPerformed
 
     private void cycleBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cycleBActionPerformed
@@ -375,26 +413,44 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                     }
                 }
             }
-            defaultProps.setProperty("v1", (String) jTable1.getValueAt(0, 1));
-            defaultProps.setProperty("v2", (String) jTable1.getValueAt(1, 1));
-            defaultProps.setProperty("vp1", (String) jTable1.getValueAt(2, 1));
-            defaultProps.setProperty("vp2", (String) jTable1.getValueAt(3, 1));
-            defaultProps.setProperty("o1", (String) jTable1.getValueAt(0, 2));
-            defaultProps.setProperty("o2", (String) jTable1.getValueAt(1, 2));
-            defaultProps.setProperty("op1", (String) jTable1.getValueAt(2, 2));
-            defaultProps.setProperty("op2", (String) jTable1.getValueAt(3, 2));
-            defaultProps.setProperty("r1", (String) jTable1.getValueAt(0, 3));
-            defaultProps.setProperty("r2", (String) jTable1.getValueAt(1, 3));
-            defaultProps.setProperty("rp1", (String) jTable1.getValueAt(2, 3));
-            defaultProps.setProperty("rp2", (String) jTable1.getValueAt(3, 3));
-        } catch (NumberFormatException ex){
+
+            if (MsgOutils.confirmation("Sauvegarde", "Voulez-vous sauvegarder les données?")) {
+                FileOutputStream out;
+                try {
+                    out = new FileOutputStream("../CarrefourInterface.properties");
+                    defaultProps.setProperty("v1", jTable1.getValueAt(0, 1).toString());
+                    defaultProps.setProperty("v2", jTable1.getValueAt(1, 1).toString());
+                    defaultProps.setProperty("vp1", jTable1.getValueAt(2, 1).toString());
+                    defaultProps.setProperty("vp2", jTable1.getValueAt(3, 1).toString());
+                    defaultProps.setProperty("o1", jTable1.getValueAt(0, 2).toString());
+                    defaultProps.setProperty("o2", jTable1.getValueAt(1, 2).toString());
+                    defaultProps.setProperty("op1", jTable1.getValueAt(2, 2).toString());
+                    defaultProps.setProperty("op2", jTable1.getValueAt(3, 2).toString());
+                    defaultProps.setProperty("r1", jTable1.getValueAt(0, 3).toString());
+                    defaultProps.setProperty("r2", jTable1.getValueAt(1, 3).toString());
+                    defaultProps.setProperty("rp1", jTable1.getValueAt(2, 3).toString());
+                    defaultProps.setProperty("rp2", jTable1.getValueAt(3, 3).toString());
+                    try {
+                        defaultProps.store(out, "--saveConfig--");
+                    } catch (IOException ex) {
+                        MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
+                    }
+                } catch (FileNotFoundException ex) {
+                    MsgOutils.erreur("FileNotFoundException", "Fichier de configuration introuvable.");
+                }
+            }
+        } catch (NumberFormatException ex) {
             MsgOutils.erreur("Exception", "Les valeurs doivent être numérique et"
-                    + " valoir entre "+ defaultProps.getProperty("minValue") + 
-                    " et " + defaultProps.getProperty("maxValue") +" secondes." );
+                    + " valoir entre " + defaultProps.getProperty("minValue")
+                    + " et " + defaultProps.getProperty("maxValue") + " secondes.");
         } catch (NullPointerException ex) {
             MsgOutils.erreur("NullPointerException", "Veuillez remplir toute les cases du tableaux !!!");
         }
     }//GEN-LAST:event_saveBActionPerformed
+
+    public JTable getjTable1() {
+        return jTable1;
+    }
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         jSliderL.setText(jSlider1.getValue() + " s");
@@ -460,6 +516,18 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     private javax.swing.JSlider jSlider1;
     private javax.swing.JLabel jSliderL;
     private javax.swing.JTable jTable1;
+    private be.esi.g34840.carrefour.gui.Led led10;
+    private be.esi.g34840.carrefour.gui.Led led11;
+    private be.esi.g34840.carrefour.gui.Led led12;
+    private be.esi.g34840.carrefour.gui.Led led13;
+    private be.esi.g34840.carrefour.gui.Led led2;
+    private be.esi.g34840.carrefour.gui.Led led3;
+    private be.esi.g34840.carrefour.gui.Led led4;
+    private be.esi.g34840.carrefour.gui.Led led5;
+    private be.esi.g34840.carrefour.gui.Led led6;
+    private be.esi.g34840.carrefour.gui.Led led7;
+    private be.esi.g34840.carrefour.gui.Led led8;
+    private be.esi.g34840.carrefour.gui.Led led9;
     private javax.swing.JButton previsualB;
     private javax.swing.JButton saveB;
     // End of variables declaration//GEN-END:variables

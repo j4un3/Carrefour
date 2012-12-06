@@ -70,9 +70,9 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
     }
 
     private void defaultInit() {
-        vert = new int[]{10, 10, 10, 10};
-        orange = new int[]{5, 5, 5, 5};
-        rouge = new int[]{15, 15, 15, 15};
+        vert = new int[]{10, 10, 7, 7};
+        orange = new int[]{5, 5, 3, 3};
+        rouge = new int[]{17, 17, 22, 22};
         rougeCommun = new int[]{2, 2, 2, 2, 2, 2};
     }
 

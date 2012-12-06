@@ -126,7 +126,7 @@ public final class Carrefour {
     }
 
     private void orange(int pos) {
-        if (--orangeTimer[pos] < 1) {
+        if (--orangeTimer[pos] < 1) {   
             etat.setFeux(pos, FeuEnum.ROUGE);
             if (pos == 1 || pos == 2) {
                 rougeTimer[pos] = rougeTimer[pos] + rougeCommun;

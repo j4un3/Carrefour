@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package be.esi.g348440.carrefour.implementation;
+package be.esi.g34840.carrefour.implementation;
 
 import be.esi.g34840.carrefour.business.CarrefourClientInterface;
 import be.esi.g34840.carrefour.gui.CarrefourClientAdministrateurGUI;
