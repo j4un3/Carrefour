@@ -37,25 +37,13 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     private TimerTask timerTask;
     private Timer timer;
     private Led led;
+
     /**
      * Creates new form CarrefourClientAdministrateurGUI
      */
     public CarrefourClientAdministrateurGUI(final CarrefourServeurInterface serveur) {
         super(new JFrame(), true);
-        timer = new Timer();
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    serveur.isAlive();
-                } catch (RemoteException ex) {
-                    timerTask.cancel();
-                    MsgOutils.warning("Attention RemoteException", "Vous avez perdu la connection avec le serveur.\n La contrôle du carrefour en temps réel n'est plus disponible.\n Mais vous pouvez toujours configurer ou voir l'historique du carrefour.");
-                    cycleB.setEnabled(false);
-                }
-            }
-        };
-        timer.schedule(timerTask, 0, 5000);
+
         FileInputStream in = null;
         try {
             this.serveur = serveur;
@@ -64,10 +52,10 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             defaultProps.load(in);
             initComponents();
             client = new VueCarrefourClientAdministrateur(this);
-            this.serveur.inscription(client);
+            this.serveur.abonne(client);
             init();
         } catch (ConnectException ex) {
-            MsgOutils.erreur("ConnecException", "Problème de connection. L'application va se fermer.");
+            MsgOutils.erreur("ConnectException", "Problème de connection avec le serveur.\n L'application va se terminer.");
             System.exit(0);
         } catch (FileNotFoundException ex) {
             MsgOutils.erreur("FileNotFoundException", "Fichier de configuration introuvable.");
@@ -82,11 +70,25 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 saveB.setEnabled(false);
             }
         }
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    serveur.isAlive();
+                } catch (RemoteException ex) {
+                    timerTask.cancel();
+                    MsgOutils.warning("Attention RemoteException", "Vous avez perdu la connection avec le serveur.\n Le contrôle du carrefour en temps réel n'est plus disponible.\n Mais vous pouvez toujours configurer ou voir l'historique du carrefour.");
+                    cycleB.setEnabled(false);
+                }
+            }
+        };
+        timer.schedule(timerTask, 0, 5000);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
-                    serveur.desinscription(client);
+                    serveur.desabonne(client);
                     System.exit(0);
                 } catch (RemoteException ex) {
                     MsgOutils.erreur("RemoteException", ex.getMessage());
@@ -102,6 +104,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 + defaultProps.getProperty("minValue") + " et "
                 + defaultProps.getProperty("maxValue") + " secondes.");
         jSliderL.setText(defaultProps.getProperty("rc1") + " s");
+        jSlider1.setValue(Integer.parseInt(defaultProps.getProperty("rc1")));
         avertissementL.setForeground(Color.RED);
         jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("v1")), 0, 1);
         jTable1.setValueAt(Integer.parseInt(defaultProps.getProperty("v2")), 1, 1);
@@ -148,6 +151,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         jSlider1 = new javax.swing.JSlider();
         jSliderL = new javax.swing.JLabel();
+        pDefautB = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -161,6 +165,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         cycleB = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Client Administrateur du carrefour");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuration des durées en secondes des feux d'un carrefour"));
 
@@ -227,6 +232,13 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
 
         jSliderL.setText("1 s");
 
+        pDefautB.setText("Par défaut");
+        pDefautB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pDefautBActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -243,17 +255,18 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(pDefautB)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(previsualB)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(saveB)
-                        .addGap(35, 35, 35))
+                        .addComponent(saveB))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
                         .addComponent(jSliderL)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -271,7 +284,8 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                                 .addGap(3, 3, 3)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(previsualB)
-                                    .addComponent(saveB)))
+                                    .addComponent(saveB)
+                                    .addComponent(pDefautB)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addGap(0, 0, Short.MAX_VALUE))))
@@ -370,7 +384,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 728, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jPanel1, jPanel2});
@@ -456,6 +470,10 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         jSliderL.setText(jSlider1.getValue() + " s");
     }//GEN-LAST:event_jSlider1StateChanged
 
+    private void pDefautBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pDefautBActionPerformed
+        init();        // TODO add your handling code here:
+    }//GEN-LAST:event_pDefautBActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -516,18 +534,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     private javax.swing.JSlider jSlider1;
     private javax.swing.JLabel jSliderL;
     private javax.swing.JTable jTable1;
-    private be.esi.g34840.carrefour.gui.Led led10;
-    private be.esi.g34840.carrefour.gui.Led led11;
-    private be.esi.g34840.carrefour.gui.Led led12;
-    private be.esi.g34840.carrefour.gui.Led led13;
-    private be.esi.g34840.carrefour.gui.Led led2;
-    private be.esi.g34840.carrefour.gui.Led led3;
-    private be.esi.g34840.carrefour.gui.Led led4;
-    private be.esi.g34840.carrefour.gui.Led led5;
-    private be.esi.g34840.carrefour.gui.Led led6;
-    private be.esi.g34840.carrefour.gui.Led led7;
-    private be.esi.g34840.carrefour.gui.Led led8;
-    private be.esi.g34840.carrefour.gui.Led led9;
+    private javax.swing.JButton pDefautB;
     private javax.swing.JButton previsualB;
     private javax.swing.JButton saveB;
     // End of variables declaration//GEN-END:variables

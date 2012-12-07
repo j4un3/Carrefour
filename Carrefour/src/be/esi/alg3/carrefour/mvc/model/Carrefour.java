@@ -57,12 +57,12 @@ public final class Carrefour {
         return etat;
     }
 
-    public void inscription(CarrefourVueInterface vue) {
+    public void abonne(CarrefourVueInterface vue) {
         views.add(vue);
         fire();
     }
 
-    public void desinscription(CarrefourVueInterface vue) {
+    public void desabonne(CarrefourVueInterface vue) {
         views.remove(vue);
         fire();
     }
@@ -161,5 +161,12 @@ public final class Carrefour {
         vertTimer[pos] = this.saveTimerVert[pos];
         orangeTimer[pos] = this.saveTimerOrange[pos];
         rougeTimer[pos] = this.saveTimerRouge[pos];
+    }
+    public void stop(){
+        timer.cancel();
+    }
+
+    public void poussoire(int feu) {
+        
     }
 }

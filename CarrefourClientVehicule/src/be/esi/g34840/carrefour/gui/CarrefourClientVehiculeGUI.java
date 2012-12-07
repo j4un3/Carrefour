@@ -4,42 +4,41 @@
  */
 package be.esi.g34840.carrefour.gui;
 
+import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
 import be.esi.g34840.carrefour.implementation.VueCarrefourClientVehicule;
 import be.esi.gui.outils.MsgOutils;
 import java.awt.Color;
-import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.BorderFactory;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 /**
  *
- * @author user0
+ * @author g34840
  */
-public class CarrefourClientVehiculeGUI extends JDialog {
+public class CarrefourClientVehiculeGUI extends javax.swing.JDialog {
 
     public static int FEUX_VEHICULE_N_S = 0;
     public static int FEUX_VEHICULE_E_O = 1;
-    private Led[] leds;
-    private CarrefourServeurInterface serveur;
-    private JPanel led1P;
-    private JPanel led2P;
     private VueCarrefourClientVehicule client;
     private Timer timer;
     private boolean ok;
+    private CarrefourServeurInterface serveur;
     private TimerTask timerTask;
+    private boolean feuNS;
 
+    /**
+     * Creates new form CarrefourClientVehiculeGUI
+     */
     public CarrefourClientVehiculeGUI(final CarrefourServeurInterface serveur) {
         super(new JFrame(), true);
         timer = new Timer();
+        feuNS = true;
         ok = true;
         timerTask = new TimerTask() {
             @Override
@@ -52,30 +51,21 @@ public class CarrefourClientVehiculeGUI extends JDialog {
             }
         };
         timer.schedule(timerTask, 0, 5000);
+        initComponents();
+        ledFeuRouge.setOn(true);
+        ledFeuOrange.setOn(true);
+        ledFeuVert.setOn(true);
+        ledFeuVert.setColor(Color.blue);
         try {
-
-            setLayout(new GridLayout(1, 2));
-            led1P = new JPanel();
-            led1P.setBorder(BorderFactory.createTitledBorder("Feu véhicule NORD-SUD"));
-            led2P = new JPanel();
-            led2P.setBorder(BorderFactory.createTitledBorder("Feu véhicule EST-OUEST"));
-            leds = new Led[2];
-            leds[FEUX_VEHICULE_N_S] = new Led();
-            leds[FEUX_VEHICULE_E_O] = new Led();
-            leds[FEUX_VEHICULE_N_S].setOn(true);
-            leds[FEUX_VEHICULE_E_O].setOn(true);
-            led1P.add(leds[FEUX_VEHICULE_N_S]);
-            led2P.add(leds[FEUX_VEHICULE_E_O]);
-            add(led1P);
-            add(led2P);
-            this.serveur = serveur;
             this.client = new VueCarrefourClientVehicule(this);
-            serveur.inscription(client);
+
+            this.serveur = serveur;
+            serveur.abonne(client);
             addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     try {
-                        serveur.desinscription(client);
+                        serveur.desabonne(client);
                         System.exit(0);
                     } catch (RemoteException ex) {
                         MsgOutils.erreur("RemoteException", ex.getMessage());
@@ -83,9 +73,9 @@ public class CarrefourClientVehiculeGUI extends JDialog {
                     }
                 }
             });
-                  } catch (ConnectException ex){
-                MsgOutils.erreur("ConnecException", "Problème de connection. L'application va se fermer.");
-                    System.exit(0);
+        } catch (ConnectException ex) {
+            MsgOutils.erreur("ConnecException", "Problème de connection. L'application va se fermer.");
+            System.exit(0);
         } catch (RemoteException ex) {
             MsgOutils.erreur("Client RemoteException", ex.getMessage());
             System.exit(0);
@@ -104,22 +94,238 @@ public class CarrefourClientVehiculeGUI extends JDialog {
 
     private void setFeuWarning() {
         if (ok) {
-            leds[FEUX_VEHICULE_N_S].setColor(Color.black);
-            leds[FEUX_VEHICULE_E_O].setColor(Color.black);
+            ledFeuOrange.setColor(Color.black);
+            ledFeuOrange.setColor(Color.black);
         } else {
-            leds[FEUX_VEHICULE_E_O].setColor(Color.orange);
-            leds[FEUX_VEHICULE_N_S].setColor(Color.orange);
+            ledFeuOrange.setColor(Color.orange);
+            ledFeuOrange.setColor(Color.orange);
         }
         ok = !ok;
     }
 
     public void update() throws RemoteException {
-        if(serveur.getEtat().getFeux(FEUX_VEHICULE_N_S).getColor().equals(Color.BLACK)){
-            setFeuWarning();
-        }
-        else{
-        leds[FEUX_VEHICULE_N_S].setColor(serveur.getEtat().getFeux(FEUX_VEHICULE_N_S).getColor());
-        leds[FEUX_VEHICULE_E_O].setColor(serveur.getEtat().getFeux(FEUX_VEHICULE_E_O).getColor());
+        CarrefourEtat etat = serveur.getEtat();
+        switch (etat.getFeux(feuNS ? FEUX_VEHICULE_N_S : FEUX_VEHICULE_E_O).getValue()) {
+            case 0:
+                ledFeuRouge.setColor(Color.black);
+                ledFeuOrange.setColor(Color.black);
+                ledFeuVert.setColor(serveur.getEtat().getFeux(feuNS ? FEUX_VEHICULE_N_S : FEUX_VEHICULE_E_O).getColor());
+                break;
+            case 1:
+                ledFeuRouge.setColor(Color.black);
+                ledFeuVert.setColor(Color.black);
+                ledFeuOrange.setColor(serveur.getEtat().getFeux(feuNS ? FEUX_VEHICULE_N_S : FEUX_VEHICULE_E_O).getColor());
+                break;
+            case 2:
+                ledFeuVert.setColor(Color.black);
+                ledFeuOrange.setColor(Color.black);
+                ledFeuRouge.setColor(serveur.getEtat().getFeux(feuNS ? FEUX_VEHICULE_N_S : FEUX_VEHICULE_E_O).getColor());
+                break;
+            case 5:
+                ledFeuRouge.setColor(Color.black);
+                ledFeuVert.setColor(Color.black);
+                ledFeuOrange.setColor(serveur.getEtat().getFeux(feuNS ? FEUX_VEHICULE_N_S : FEUX_VEHICULE_E_O).getColor());
+                break;
+
+
         }
     }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        jPanel1 = new javax.swing.JPanel();
+        ledFeuRouge = new be.esi.g34840.carrefour.gui.Led();
+        ledFeuOrange = new be.esi.g34840.carrefour.gui.Led();
+        ledFeuVert = new be.esi.g34840.carrefour.gui.Led();
+        jPanel2 = new javax.swing.JPanel();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Véhicule Nord-Sud"));
+
+        javax.swing.GroupLayout ledFeuRougeLayout = new javax.swing.GroupLayout(ledFeuRouge);
+        ledFeuRouge.setLayout(ledFeuRougeLayout);
+        ledFeuRougeLayout.setHorizontalGroup(
+            ledFeuRougeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        ledFeuRougeLayout.setVerticalGroup(
+            ledFeuRougeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout ledFeuOrangeLayout = new javax.swing.GroupLayout(ledFeuOrange);
+        ledFeuOrange.setLayout(ledFeuOrangeLayout);
+        ledFeuOrangeLayout.setHorizontalGroup(
+            ledFeuOrangeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        ledFeuOrangeLayout.setVerticalGroup(
+            ledFeuOrangeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout ledFeuVertLayout = new javax.swing.GroupLayout(ledFeuVert);
+        ledFeuVert.setLayout(ledFeuVertLayout);
+        ledFeuVertLayout.setHorizontalGroup(
+            ledFeuVertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        ledFeuVertLayout.setVerticalGroup(
+            ledFeuVertLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ledFeuVert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ledFeuOrange, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ledFeuRouge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ledFeuRouge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ledFeuOrange, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ledFeuVert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Option Axe"));
+
+        buttonGroup1.add(jRadioButton1);
+        jRadioButton1.setSelected(true);
+        jRadioButton1.setText("Axe Nord-Sud");
+        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton1ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(jRadioButton2);
+        jRadioButton2.setText("Axe Est-Ouest");
+        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jRadioButton2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jRadioButton1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jRadioButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 3, Short.MAX_VALUE)
+                .addComponent(jRadioButton2))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jPanel1, jPanel2});
+
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Véhicule Nord-Sud"));
+        feuNS = true;
+    }//GEN-LAST:event_jRadioButton1ActionPerformed
+
+    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Véhicule Est-Ouest"));
+        feuNS = false;    }//GEN-LAST:event_jRadioButton2ActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(CarrefourClientVehiculeGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(CarrefourClientVehiculeGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(CarrefourClientVehiculeGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(CarrefourClientVehiculeGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                CarrefourClientVehiculeGUI dialog = new CarrefourClientVehiculeGUI(null);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
+    private be.esi.g34840.carrefour.gui.Led ledFeuOrange;
+    private be.esi.g34840.carrefour.gui.Led ledFeuRouge;
+    private be.esi.g34840.carrefour.gui.Led ledFeuVert;
+    // End of variables declaration//GEN-END:variables
 }

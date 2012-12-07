@@ -13,7 +13,8 @@ import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
 public interface CarrefourServeurInterface extends java.rmi.Remote{
     public void warning(boolean warning) throws java.rmi.RemoteException;
     public CarrefourEtat getEtat() throws java.rmi.RemoteException;
-    public void inscription(CarrefourClientInterface vue) throws java.rmi.RemoteException;
-    public void desinscription(CarrefourClientInterface vue) throws java.rmi.RemoteException;
+    public void abonne(CarrefourClientInterface vue) throws java.rmi.RemoteException;
+    public void desabonne(CarrefourClientInterface vue) throws java.rmi.RemoteException;
     public void isAlive() throws java.rmi.RemoteException;
+    public void poussoire(int feu) throws java.rmi.RemoteException;
 }

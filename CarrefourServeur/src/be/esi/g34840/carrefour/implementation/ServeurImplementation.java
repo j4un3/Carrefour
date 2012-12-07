@@ -66,7 +66,7 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
         int rougeCommun1 = rougeCommun[0];
         model = new Carrefour(vert, orange, rouge, rougeCommun1,1000);
         views = new ArrayList<CarrefourClientInterface>();
-        model.inscription(this);
+        model.abonne(this);
     }
 
     private void defaultInit() {
@@ -97,13 +97,13 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
     }
 
     @Override
-    public void inscription(CarrefourClientInterface vue) throws RemoteException {
+    public void abonne(CarrefourClientInterface vue) throws RemoteException {
         views.add(vue);
         fire();
     }
 
     @Override
-    public void desinscription(CarrefourClientInterface vue) throws RemoteException {
+    public void desabonne(CarrefourClientInterface vue) throws RemoteException {
         views.remove(vue);
         fire();
     }
@@ -115,5 +115,10 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
 
     @Override
     public void isAlive() throws RemoteException {
+    }
+
+    @Override
+    public void poussoire(int feu) throws RemoteException {
+        model.poussoire(feu);
     }
 }
