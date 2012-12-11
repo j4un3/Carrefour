@@ -36,8 +36,8 @@ public final class Carrefour {
         this.saveTimerRouge = rouge;
         this.saveTimerVert = vert;
         this.rougeCommun = rougeCommun;
-        this.saveTimerRouge[FEUX_VEHICULE_N_S]= this.saveTimerRouge[FEUX_VEHICULE_N_S] + rougeCommun;
-        this.saveTimerRouge[FEUX_PIETON_E_O]= this.saveTimerRouge[FEUX_PIETON_E_O] + rougeCommun;
+        this.saveTimerRouge[FEUX_VEHICULE_N_S] = this.saveTimerRouge[FEUX_VEHICULE_N_S] + rougeCommun;
+        this.saveTimerRouge[FEUX_PIETON_E_O] = this.saveTimerRouge[FEUX_PIETON_E_O] + rougeCommun;
         warning = false;
         this.reset();
         vitesseExec(vitesseExecution);
@@ -126,7 +126,7 @@ public final class Carrefour {
     }
 
     private void orange(int pos) {
-        if (--orangeTimer[pos] < 1) {   
+        if (--orangeTimer[pos] < 1) {
             etat.setFeux(pos, FeuEnum.ROUGE);
             if (pos == 1 || pos == 2) {
                 rougeTimer[pos] = rougeTimer[pos] + rougeCommun;
@@ -162,11 +162,38 @@ public final class Carrefour {
         orangeTimer[pos] = this.saveTimerOrange[pos];
         rougeTimer[pos] = this.saveTimerRouge[pos];
     }
-    public void stop(){
+
+    public void stop() {
         timer.cancel();
     }
 
-    public void poussoire(int feu) {
-        
+    public void poussoir(int feu) {
+        if (feu == FEUX_PIETON_N_S) {
+            int vert = (vertTimer[FEUX_VEHICULE_N_S] - 2);
+            if (vert > 0) {
+                rougeTimer[FEUX_PIETON_N_S] -= vert;
+                rougeTimer[FEUX_VEHICULE_E_O] -= vert;
+                avance(FEUX_VEHICULE_N_S, vert);
+                avance(FEUX_PIETON_E_O, vert);
+            }
+        } else {
+            int vert = (vertTimer[FEUX_PIETON_E_O] - 2);
+            if (vert > 0) {
+                avance(FEUX_PIETON_N_S, vert);
+                avance(FEUX_VEHICULE_E_O, vert);
+                rougeTimer[FEUX_VEHICULE_N_S] -= vert;
+                rougeTimer[FEUX_PIETON_E_O] -= vert;
+            }
+        }
+    }
+
+    private void avance(int feu, int avancement) {
+        int valeur = vertTimer[feu] -= avancement;
+        if (valeur < 0) {
+            valeur = orangeTimer[feu] -= -valeur;
+        }
+        if (valeur < 0) {
+            rougeTimer[feu] -= -valeur;
+        }
     }
 }

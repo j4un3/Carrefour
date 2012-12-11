@@ -5,6 +5,7 @@
 package be.esi.g34840.carrefour.implementation;
 
 import be.esi.alg3.carrefour.mvc.concept.CarrefourVueInterface;
+import be.esi.alg3.carrefour.mvc.concept.FeuEnum;
 import be.esi.alg3.carrefour.mvc.model.Carrefour;
 import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
 import be.esi.g34840.carrefour.business.CarrefourClientInterface;
@@ -15,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Properties;
 
@@ -64,25 +66,33 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
             defaultInit();
         }
         int rougeCommun1 = rougeCommun[0];
-        model = new Carrefour(vert, orange, rouge, rougeCommun1,1000);
+        model = new Carrefour(vert, orange, rouge, rougeCommun1, 1000);
         views = new ArrayList<CarrefourClientInterface>();
         model.abonne(this);
     }
 
     private void defaultInit() {
-        vert = new int[]{10, 10, 7, 7};
-        orange = new int[]{5, 5, 3, 3};
-        rouge = new int[]{17, 17, 22, 22};
+        vert = new int[]{10, 10, 10, 10};
+        orange = new int[]{5, 5, 5, 5};
+        rouge = new int[]{17, 17, 17, 17};
         rougeCommun = new int[]{2, 2, 2, 2, 2, 2};
     }
 
     private void fire() {
-        for (CarrefourClientInterface uneVue : views) {
-            try {
-                uneVue.update();
-            } catch (RemoteException ex) {
-                MsgOutils.erreur("Serveur RemoteException", ex.getMessage());
+        try {
+            for (CarrefourClientInterface uneVue : views) {
+                try {
+                    uneVue.update();
+                } catch (RemoteException exe) {
+                    try {
+                        desabonne(uneVue);
+                    } catch (RemoteException ex) {
+                        MsgOutils.erreur("RemoteException", "Impossible de désabonner la vue : " + ex.getMessage());
+                    }
+                }
             }
+        } catch (ConcurrentModificationException ex) {
+            fire();
         }
     }
 
@@ -118,7 +128,9 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
     }
 
     @Override
-    public void poussoire(int feu) throws RemoteException {
-        model.poussoire(feu);
+    public void poussoir(int feu) throws RemoteException {
+        if (model.getEtat().getFeux(feu%2) == FeuEnum.VERT) {
+            model.poussoir(feu);
+        }
     }
 }

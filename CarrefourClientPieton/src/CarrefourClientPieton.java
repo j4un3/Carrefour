@@ -1,6 +1,6 @@
 
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
-import be.esi.g34840.carrefour.gui.CarrefourClientPietonGUIOLD;
+import be.esi.g34840.carrefour.gui.CarrefourClientPietonGUI;
 import consoleaddition.LocalisationDialog;
 
 /*
@@ -23,7 +23,7 @@ public class CarrefourClientPieton {
         config.setTitle("Localisation d'un plan");
         config.setVisible(true);
         CarrefourServeurInterface carrefour = (CarrefourServeurInterface) config.getObjet();
-        CarrefourClientPietonGUIOLD frame = new CarrefourClientPietonGUIOLD(carrefour);
+        CarrefourClientPietonGUI frame = new CarrefourClientPietonGUI(carrefour);
         frame.pack();
         frame.setVisible(true);    }
 }
