@@ -30,7 +30,8 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
     private List<CarrefourClientInterface> views;
     private Properties defaultProps;
     private FileInputStream in;
-    private int[] rouge, orange, vert, rougeCommun;
+    private int[] rouge, orange, vert;
+    private int rougeCommun;
 
     public ServeurImplementation() throws RemoteException {
         try {
@@ -49,12 +50,7 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
                 Integer.parseInt((String) defaultProps.get("r2")),
                 Integer.parseInt((String) defaultProps.getProperty("rp1")),
                 Integer.parseInt((String) defaultProps.getProperty("rp2"))};
-            rougeCommun = new int[]{Integer.parseInt((String) defaultProps.getProperty("rc1")),
-                Integer.parseInt((String) defaultProps.get("rc2")),
-                Integer.parseInt((String) defaultProps.getProperty("rpc11")),
-                Integer.parseInt((String) defaultProps.getProperty("rpc12")),
-                Integer.parseInt((String) defaultProps.getProperty("rpc22")),
-                Integer.parseInt((String) defaultProps.getProperty("rpc21")),};
+            rougeCommun =Integer.parseInt((String) defaultProps.getProperty("rc1"));
         } catch (FileNotFoundException ex) {
             MsgOutils.erreur("FileNotFoundException", "Fichier de configuration "
                     + "introuvable.\n Le serveur sera lancé avec une configuration par défaut.");
@@ -65,8 +61,7 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
                     + "\n Le serveur sera lancé avec une configuration par défaut.");
             defaultInit();
         }
-        int rougeCommun1 = rougeCommun[0];
-        model = new Carrefour(vert, orange, rouge, rougeCommun1, 1000);
+        model = new Carrefour(vert, orange, rouge, rougeCommun, 1000);
         views = new ArrayList<CarrefourClientInterface>();
         model.abonne(this);
     }
@@ -75,7 +70,7 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
         vert = new int[]{10, 10, 10, 10};
         orange = new int[]{5, 5, 5, 5};
         rouge = new int[]{17, 17, 17, 17};
-        rougeCommun = new int[]{2, 2, 2, 2, 2, 2};
+        rougeCommun = 2;
     }
 
     private void fire() {
