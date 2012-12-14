@@ -4,29 +4,32 @@
  */
 package be.esi.g34840.carrefour.gui;
 
-import java.awt.Color;
+import be.esi.g34840.carrefour.concept.VueClientAdmin;
 import java.awt.Image;
+import javax.swing.JFrame;
 
 /**
  *
  * @author J4un3
  */
-public class VueTpsReel extends javax.swing.JDialog {
+public class VueTpsReel extends javax.swing.JDialog implements VueClientAdmin {
 
     /**
      * variable de classe contenant l'image à afficher en fond
      */
     private Image bg;
+    private PanelTpsReel panel;
 
     /**
      * Creates new form VueTpsReel
      */
-    public VueTpsReel(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public VueTpsReel(CarrefourClientAdministrateurGUI admin) {
+        super(new JFrame(), false);
         initComponents();
-        setContentPane(new PanelTpsReel());
+        panel = new PanelTpsReel(admin);
+        admin.abonne(this);
+        setContentPane(panel);
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -84,7 +87,7 @@ public class VueTpsReel extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                VueTpsReel dialog = new VueTpsReel(new javax.swing.JFrame(), true);
+                VueTpsReel dialog = new VueTpsReel(null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -97,4 +100,9 @@ public class VueTpsReel extends javax.swing.JDialog {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void update() {
+        panel.update();
+    }
 }

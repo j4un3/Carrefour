@@ -6,6 +6,7 @@ package be.esi.g34840.carrefour.gui;
 
 import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
+import be.esi.g34840.carrefour.concept.VueClientAdmin;
 import be.esi.g34840.carrefour.implementation.VueCarrefourClientAdministrateur;
 import be.esi.gui.outils.MsgOutils;
 import java.awt.Color;
@@ -17,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -37,13 +39,15 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     private TimerTask timerTask;
     private Timer timer;
     private Led led;
+    private ArrayList<VueClientAdmin> vues;
+    private CarrefourEtat etat;
 
     /**
      * Creates new form CarrefourClientAdministrateurGUI
      */
     public CarrefourClientAdministrateurGUI(final CarrefourServeurInterface serveur) {
         super(new JFrame(), true);
-
+        vues = new ArrayList<VueClientAdmin>();
         FileInputStream in = null;
         try {
             this.serveur = serveur;
@@ -98,6 +102,10 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         });
     }
 
+    public CarrefourEtat getEtat() {
+        return etat;
+    }
+
     private void init() {
         avertissementL.setText("Les durées sont calculées en secondes et "
                 + "leur valeur doit être comprise entre "
@@ -123,13 +131,30 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
 
     public void update() {
         try {
-            CarrefourEtat etat = serveur.getEtat();
+            etat = serveur.getEtat();
             feuVehiculeNSL.setText(etat.getFeux(FEUX_VEHICULE_N_S).getLibelle());
             feuVehiculeEOL.setText(etat.getFeux(FEUX_VEHICULE_E_O).getLibelle());
             feuPietonEOL.setText(etat.getFeux(FEUX_PIETON_E_O).getLibelle());
             feuPietonNSL.setText(etat.getFeux(FEUX_PIETON_N_S).getLibelle());
+            fire();
         } catch (RemoteException ex) {
             MsgOutils.erreur("RemoteException", "Vous avez perdu la connection avec le serveur.");
+        }
+    }
+
+    public void abonne(VueClientAdmin vue) {
+        vues.add(vue);
+        fire();
+    }
+
+    public void desabonne(VueClientAdmin vue) {
+        vues.remove(vue);
+        fire();
+    }
+
+    private void fire() {
+        for (VueClientAdmin vue : vues) {
+            vue.update();
         }
     }
 
@@ -163,6 +188,9 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         feuPietonEOL = new javax.swing.JLabel();
         historiqueB = new javax.swing.JButton();
         cycleB = new javax.swing.JToggleButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Client Administrateur du carrefour");
@@ -245,7 +273,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 711, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 5, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(85, 85, 85)
                 .addComponent(avertissementL)
@@ -377,6 +405,20 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
+        jMenu1.setText("Menu");
+
+        jMenuItem1.setText("Vue graphique");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -384,7 +426,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 735, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jPanel1, jPanel2});
@@ -474,6 +516,12 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         init();        // TODO add your handling code here:
     }//GEN-LAST:event_pDefautBActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        VueTpsReel vueGraphique = new VueTpsReel(this);
+        vueGraphique.pack();
+        vueGraphique.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -528,6 +576,9 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

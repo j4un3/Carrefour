@@ -30,6 +30,14 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
         vert = new int[]{(Integer) gui.getjTable1().getValueAt(0, 1), (Integer) gui.getjTable1().getValueAt(1, 1), (Integer) gui.getjTable1().getValueAt(2, 1), (Integer) gui.getjTable1().getValueAt(3, 1)};
         orange = new int[]{(Integer) gui.getjTable1().getValueAt(0, 2), (Integer) gui.getjTable1().getValueAt(1, 2), (Integer) gui.getjTable1().getValueAt(2, 2), (Integer) gui.getjTable1().getValueAt(3, 2)};
         rouge = new int[]{(Integer) gui.getjTable1().getValueAt(0, 3), (Integer) gui.getjTable1().getValueAt(1, 3), (Integer) gui.getjTable1().getValueAt(2, 3), (Integer) gui.getjTable1().getValueAt(3, 3)};
+        feuPieton3.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Piéton Nord-Sud"));
+        feuPieton3.setFeuNS(true);
+        feuPieton4.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Piéton Est-Ouest"));
+        feuPieton4.setFeuNS(false);
+        feuVehicule1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Véhicule Nord-Sud"));
+        feuVehicule1.setFeuNS(true);
+        feuVehicule2.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Véhicule Est-Ouest"));
+        feuVehicule2.setFeuNS(false);
     }
 
     /**
@@ -42,18 +50,10 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        feuVNSL = new javax.swing.JLabel();
-        feuVEOL = new javax.swing.JLabel();
-        feuPNSL = new javax.swing.JLabel();
-        feuPEOL = new javax.swing.JLabel();
-        ledFeuVNS = new be.esi.g34840.carrefour.gui.Led();
-        ledFeuVEO = new be.esi.g34840.carrefour.gui.Led();
-        ledFeuPNS = new be.esi.g34840.carrefour.gui.Led();
-        ledFeuPEO = new be.esi.g34840.carrefour.gui.Led();
+        feuVehicule1 = new be.esi.g34840.carrefour.gui.FeuVehicule();
+        feuVehicule2 = new be.esi.g34840.carrefour.gui.FeuVehicule();
+        feuPieton3 = new be.esi.g34840.carrefour.gui.FeuPieton();
+        feuPieton4 = new be.esi.g34840.carrefour.gui.FeuPieton();
         jPanel2 = new javax.swing.JPanel();
         jSlider1 = new javax.swing.JSlider();
         jLabel5 = new javax.swing.JLabel();
@@ -65,120 +65,33 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Prévisualisation du carrefour"));
 
-        jLabel1.setText("Feu véhicule Nord-Sud :");
-
-        jLabel2.setText("Feu véhicule Est-Ouest :");
-
-        jLabel3.setText("Feu piéton Nord-Sud :");
-
-        jLabel4.setText("Feu piéton Est-Ouest :");
-
-        feuVNSL.setText("Vert");
-
-        feuVEOL.setText("Rouge");
-
-        feuPNSL.setText("Rouge");
-
-        feuPEOL.setText("Vert");
-
-        org.jdesktop.layout.GroupLayout ledFeuVNSLayout = new org.jdesktop.layout.GroupLayout(ledFeuVNS);
-        ledFeuVNS.setLayout(ledFeuVNSLayout);
-        ledFeuVNSLayout.setHorizontalGroup(
-            ledFeuVNSLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 18, Short.MAX_VALUE)
-        );
-        ledFeuVNSLayout.setVerticalGroup(
-            ledFeuVNSLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 22, Short.MAX_VALUE)
-        );
-
-        org.jdesktop.layout.GroupLayout ledFeuVEOLayout = new org.jdesktop.layout.GroupLayout(ledFeuVEO);
-        ledFeuVEO.setLayout(ledFeuVEOLayout);
-        ledFeuVEOLayout.setHorizontalGroup(
-            ledFeuVEOLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 19, Short.MAX_VALUE)
-        );
-        ledFeuVEOLayout.setVerticalGroup(
-            ledFeuVEOLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 22, Short.MAX_VALUE)
-        );
-
-        org.jdesktop.layout.GroupLayout ledFeuPNSLayout = new org.jdesktop.layout.GroupLayout(ledFeuPNS);
-        ledFeuPNS.setLayout(ledFeuPNSLayout);
-        ledFeuPNSLayout.setHorizontalGroup(
-            ledFeuPNSLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 19, Short.MAX_VALUE)
-        );
-        ledFeuPNSLayout.setVerticalGroup(
-            ledFeuPNSLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 22, Short.MAX_VALUE)
-        );
-
-        org.jdesktop.layout.GroupLayout ledFeuPEOLayout = new org.jdesktop.layout.GroupLayout(ledFeuPEO);
-        ledFeuPEO.setLayout(ledFeuPEOLayout);
-        ledFeuPEOLayout.setHorizontalGroup(
-            ledFeuPEOLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 19, Short.MAX_VALUE)
-        );
-        ledFeuPEOLayout.setVerticalGroup(
-            ledFeuPEOLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 22, Short.MAX_VALUE)
-        );
-
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel4)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel3)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel2)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel1))
+                .add(feuVehicule1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(feuVEOL)
-                    .add(feuVNSL)
-                    .add(feuPNSL)
-                    .add(feuPEOL))
+                .add(feuPieton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(ledFeuPNS, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(ledFeuPEO, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(1, 1, 1)
-                        .add(ledFeuVNS, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(ledFeuVEO, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(101, 101, 101))
+                .add(feuVehicule2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(feuPieton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
+
+        jPanel1Layout.linkSize(new java.awt.Component[] {feuPieton3, feuPieton4, feuVehicule1, feuVehicule2}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
+
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(jLabel1)
-                        .add(feuVNSL))
-                    .add(ledFeuVNS, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(jLabel2)
-                        .add(feuVEOL))
-                    .add(ledFeuVEO, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(jLabel3)
-                        .add(feuPNSL))
-                    .add(ledFeuPNS, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(jLabel4)
-                        .add(feuPEOL))
-                    .add(ledFeuPEO, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, feuVehicule1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, feuPieton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, feuVehicule2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, feuPieton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -212,20 +125,19 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 197, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jSlider1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 190, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanel2Layout.createSequentialGroup()
-                        .add(177, 177, 177)
-                        .add(jToggleButton1)))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()
+                .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 197, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jSlider1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
                 .add(0, 0, Short.MAX_VALUE)
                 .add(msL)
-                .add(52, 52, 52))
+                .add(20, 20, 20))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(jToggleButton1)
+                .add(305, 305, 305))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -237,7 +149,7 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
                         .add(jLabel5)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(msL)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 21, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 22, Short.MAX_VALUE)
                 .add(jToggleButton1)
                 .addContainerGap())
         );
@@ -246,9 +158,9 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -256,11 +168,10 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         pack();
@@ -271,19 +182,10 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
             jToggleButton1.setText("Stop");
             carrefour = new Carrefour(vert, orange, rouge, rougeCommun, jSlider1.getValue());
             carrefour.abonne(this);
-            jSlider1.setEnabled(false);
-            ledFeuPEO.setOn(true);
-            ledFeuVNS.setOn(true);
-            ledFeuVEO.setOn(true);
-            ledFeuPNS.setOn(true);
         } else {
             carrefour.desabonne(this);
             carrefour.stop();
             carrefour = null;
-            ledFeuPEO.setOn(false);
-            ledFeuVNS.setOn(false);
-            ledFeuVEO.setOn(false);
-            ledFeuPNS.setOn(false);
             jSlider1.setEnabled(true);
             jToggleButton1.setText("Prévisualiser");
         }
@@ -335,37 +237,24 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel feuPEOL;
-    private javax.swing.JLabel feuPNSL;
-    private javax.swing.JLabel feuVEOL;
-    private javax.swing.JLabel feuVNSL;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private be.esi.g34840.carrefour.gui.FeuPieton feuPieton3;
+    private be.esi.g34840.carrefour.gui.FeuPieton feuPieton4;
+    private be.esi.g34840.carrefour.gui.FeuVehicule feuVehicule1;
+    private be.esi.g34840.carrefour.gui.FeuVehicule feuVehicule2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSlider jSlider1;
     private javax.swing.JToggleButton jToggleButton1;
-    private be.esi.g34840.carrefour.gui.Led ledFeuPEO;
-    private be.esi.g34840.carrefour.gui.Led ledFeuPNS;
-    private be.esi.g34840.carrefour.gui.Led ledFeuVEO;
-    private be.esi.g34840.carrefour.gui.Led ledFeuVNS;
     private javax.swing.JLabel msL;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void update() {
         CarrefourEtat etat = carrefour.getEtat();
-        feuVNSL.setText(etat.getFeux(FEUX_VEHICULE_N_S).getLibelle());
-        feuVEOL.setText(etat.getFeux(FEUX_VEHICULE_E_O).getLibelle());
-        feuPNSL.setText(etat.getFeux(FEUX_PIETON_N_S).getLibelle());
-        feuPEOL.setText(etat.getFeux(FEUX_PIETON_E_O).getLibelle());
-
-        ledFeuVNS.setColor(etat.getFeux(FEUX_VEHICULE_N_S).getColor());
-        ledFeuVEO.setColor(etat.getFeux(FEUX_VEHICULE_E_O).getColor());
-        ledFeuPNS.setColor(etat.getFeux(FEUX_PIETON_N_S).getColor());
-        ledFeuPEO.setColor(etat.getFeux(FEUX_PIETON_E_O).getColor());
+        feuVehicule1.update(etat);
+        feuVehicule2.update(etat);
+        feuPieton3.update(etat);
+        feuPieton4.update(etat);
     }
 }

@@ -15,8 +15,23 @@ import javax.swing.JComponent;
  * @author J4un3
  */
 public class PanelTpsReel extends JComponent {
-    
+
+    public static int FEUX_PIETON_E_O = 3, FEUX_PIETON_N_S = 2,
+            FEUX_VEHICULE_E_O = 1, FEUX_VEHICULE_N_S = 0;
     private Image bg;
+    private CarrefourClientAdministrateurGUI admin;
+    private boolean ok;
+
+    /**
+     * Creates new form PanelTpsReel
+     */
+    public PanelTpsReel(CarrefourClientAdministrateurGUI admin) {
+        this.admin = admin;
+        ok = true;
+        initComponents();
+        feuOn(true);
+        bg = new ImageIcon("bg.png").getImage();
+    }
 
     /**
      * Surcharge de la fonction paintComponent() pour afficher notre image
@@ -26,36 +41,19 @@ public class PanelTpsReel extends JComponent {
         g.drawImage(bg, 0, 0, this.getWidth(), this.getHeight(), null);
     }
 
-    /**
-     * Creates new form PanelTpsReel
-     */
-    public PanelTpsReel() {
-        initComponents();
-        bg = new ImageIcon("bg.png").getImage();
-        ledNO.setColor(Color.orange);
-        ledNO.setOn(true);
-        ledNV.setOn(true);
-        ledNV.setColor(Color.green);
-        ledNR.setOn(true);
-        ledNR.setColor(Color.red);
-        ledEO.setOn(true);
-        ledER.setOn(true);
-        ledEV.setOn(true);
-        ledEO.setColor(Color.orange);
-        ledER.setColor(Color.red);
-        ledEV.setColor(Color.green);
-        ledSO.setOn(true);
-        ledSR.setOn(true);
-        ledSV.setOn(true);
-        ledSO.setColor(Color.orange);
-        ledSV.setColor(Color.green);
-        ledSR.setColor(Color.red);
-        ledOO.setOn(true);
-        ledOO.setColor(Color.orange);
-        ledOR.setOn(true);
-        ledOR.setColor(Color.red);
-        ledOV.setOn(true);
-        ledOV.setColor(Color.green);
+    private void feuOn(boolean ok) {
+        ledNR.setOn(ok);
+        ledNO.setOn(ok);
+        ledNV.setOn(ok);
+        ledEO.setOn(ok);
+        ledER.setOn(ok);
+        ledEV.setOn(ok);
+        ledOV.setOn(ok);
+        ledOR.setOn(ok);
+        ledSO.setOn(ok);
+        ledSR.setOn(ok);
+        ledSV.setOn(ok);
+        ledOO.setOn(ok);
     }
 
     /**
@@ -321,6 +319,7 @@ public class PanelTpsReel extends JComponent {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(ledSV, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(layout.createSequentialGroup()
+                        .add(6, 6, 6)
                         .add(ledOR, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(ledOO, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -332,7 +331,6 @@ public class PanelTpsReel extends JComponent {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private be.esi.g34840.carrefour.gui.Led ledEO;
     private be.esi.g34840.carrefour.gui.Led ledER;
-    private be.esi.g34840.carrefour.gui.Led ledER1;
     private be.esi.g34840.carrefour.gui.Led ledEV;
     private be.esi.g34840.carrefour.gui.Led ledNO;
     private be.esi.g34840.carrefour.gui.Led ledNR;
@@ -342,7 +340,88 @@ public class PanelTpsReel extends JComponent {
     private be.esi.g34840.carrefour.gui.Led ledOV;
     private be.esi.g34840.carrefour.gui.Led ledSO;
     private be.esi.g34840.carrefour.gui.Led ledSR;
-    private be.esi.g34840.carrefour.gui.Led ledSR1;
     private be.esi.g34840.carrefour.gui.Led ledSV;
     // End of variables declaration//GEN-END:variables
+
+    public void update() {
+        for (int i = 0; i < 4; i++) {
+            switch (admin.getEtat().getFeux(i).getValue()) {
+                case 0:
+                    setFeuVert(i);
+                    break;
+                case 1:
+                    setFeuOrange(i);
+                    break;
+                case 2:
+                    setFeuRouge(i);
+                    break;
+                case 3:
+                    setFeuOrange(i);
+                    break;
+                case 5:
+                    setFeuWarning(i);
+            }
+        }
+    }
+
+    private void setFeuVert(int i) {
+        switch (i) {
+            case 0:
+                ledNV.setColor(Color.green);
+                ledSV.setColor(Color.green);
+                ledNR.setColor(Color.black);
+                ledSR.setColor(Color.black);
+                break;
+            case 1:
+                ledEV.setColor(Color.green);
+                ledER.setColor(Color.black);
+                ledOR.setColor(Color.black);
+                ledOV.setColor(Color.green);
+                break;
+            case 2:
+            case 3:
+        }
+    }
+
+    private void setFeuOrange(int i) {
+        switch (i) {
+            case 0:
+                ledSO.setColor(Color.orange);
+                ledNO.setColor(Color.orange);
+                ledNV.setColor(Color.black);
+                ledSV.setColor(Color.black);
+                break;
+            case 1:
+                ledEO.setColor(Color.orange);
+                ledOO.setColor(Color.orange);
+                ledEV.setColor(Color.black);
+                ledOV.setColor(Color.black);
+                break;
+            case 2:
+            case 3:
+        }
+    }
+
+    private void setFeuRouge(int i) {
+        switch (i) {
+            case 0:
+                ledNR.setColor(Color.red);
+                ledSR.setColor(Color.red);
+                ledNO.setColor(Color.black);
+                ledSO.setColor(Color.black);
+                break;
+            case 1:
+                ledER.setColor(Color.red);
+                ledOR.setColor(Color.red);
+                ledEO.setColor(Color.black);
+                ledOO.setColor(Color.black);
+                break;
+            case 2:
+            case 3:
+        }
+    }
+
+    private void setFeuWarning(int i) {
+        
+    }
 }
