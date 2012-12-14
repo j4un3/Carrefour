@@ -486,6 +486,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                     defaultProps.setProperty("r2", jTable1.getValueAt(1, 3).toString());
                     defaultProps.setProperty("rp1", jTable1.getValueAt(2, 3).toString());
                     defaultProps.setProperty("rp2", jTable1.getValueAt(3, 3).toString());
+                    defaultProps.setProperty("rc1", "" + jSlider1.getValue());
                     try {
                         defaultProps.store(out, "--saveConfig--");
                     } catch (IOException ex) {
