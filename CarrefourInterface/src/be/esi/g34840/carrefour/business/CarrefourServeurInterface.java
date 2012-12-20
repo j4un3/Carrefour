@@ -17,4 +17,5 @@ public interface CarrefourServeurInterface extends java.rmi.Remote{
     public void desabonne(CarrefourClientInterface vue) throws java.rmi.RemoteException;
     public void isAlive() throws java.rmi.RemoteException;
     public void poussoir(int feu) throws java.rmi.RemoteException;
+    public void reboot() throws java.rmi.RemoteException;
 }

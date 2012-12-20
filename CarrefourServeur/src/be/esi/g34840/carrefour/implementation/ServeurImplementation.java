@@ -11,6 +11,7 @@ import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
 import be.esi.g34840.carrefour.business.CarrefourClientInterface;
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
 import be.esi.gui.outils.MsgOutils;
+import com.sun.xml.internal.ws.resources.ModelerMessages;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,15 +26,22 @@ import java.util.Properties;
  * @author g34840
  */
 public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject implements CarrefourVueInterface, CarrefourServeurInterface {
-
+    
     private Carrefour model;
     private List<CarrefourClientInterface> views;
     private Properties defaultProps;
     private FileInputStream in;
     private int[] rouge, orange, vert;
     private int rougeCommun;
-
+    
     public ServeurImplementation() throws RemoteException {
+        init();
+        model = new Carrefour(vert, orange, rouge, rougeCommun, 1000);
+        views = new ArrayList<CarrefourClientInterface>();
+        model.abonne(this);
+    }
+
+    private void init() {
         try {
             defaultProps = new Properties();
             in = new FileInputStream("../CarrefourInterface.properties");
@@ -61,9 +69,6 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
                     + "\n Le serveur sera lancé avec une configuration par défaut.");
             defaultInit();
         }
-        model = new Carrefour(vert, orange, rouge, rougeCommun, 1000);
-        views = new ArrayList<CarrefourClientInterface>();
-        model.abonne(this);
     }
 
     private void defaultInit() {
@@ -72,7 +77,7 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
         rouge = new int[]{17, 17, 17, 17};
         rougeCommun = 2;
     }
-
+    
     private void fire() {
         List<CarrefourClientInterface> viewsCopy = new ArrayList<CarrefourClientInterface>(views);
         try {
@@ -91,42 +96,48 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
             fire();
         }
     }
-
+    
     @Override
     public void warning(boolean warning) throws RemoteException {
         model.setWarning(warning);
     }
-
+    
     @Override
     public CarrefourEtat getEtat() throws RemoteException {
         return model.getEtat();
     }
-
+    
     @Override
     public void abonne(CarrefourClientInterface vue) throws RemoteException {
         views.add(vue);
         fire();
     }
-
+    
     @Override
     public void desabonne(CarrefourClientInterface vue) throws RemoteException {
         views.remove(vue);
         fire();
     }
-
+    
     @Override
     public void update() {
         fire();
     }
-
+    
     @Override
     public void isAlive() throws RemoteException {
     }
-
+    
     @Override
     public void poussoir(int feu) throws RemoteException {
         if (model.getEtat().getFeux(feu % 2) == FeuEnum.VERT) {
             model.poussoir(feu);
         }
+    }
+    
+    @Override
+    public void reboot() throws RemoteException {
+        init();
+        model.reboot(vert, orange, rouge, rougeCommun);
     }
 }

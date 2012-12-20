@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JTable;
@@ -555,6 +557,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                             defaultProps.setProperty("cycle", "" + jSlider2.getValue());
                             try {
                                 defaultProps.store(out, "--saveConfig--");
+                                serveur.reboot();
                             } catch (IOException ex) {
                                 MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
                             }
@@ -596,7 +599,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     }//GEN-LAST:event_jSlider1StateChanged
 
     private void pDefautBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pDefautBActionPerformed
-        init();        // TODO add your handling code here:
+        init();
     }//GEN-LAST:event_pDefautBActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -610,7 +613,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     }//GEN-LAST:event_jSlider2StateChanged
 
     private void jTable1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable1FocusGained
-checkCycleJTable();
+        checkCycleJTable();
     }//GEN-LAST:event_jTable1FocusGained
 
     /**
