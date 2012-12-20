@@ -50,7 +50,7 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
                 Integer.parseInt((String) defaultProps.get("r2")),
                 Integer.parseInt((String) defaultProps.getProperty("rp1")),
                 Integer.parseInt((String) defaultProps.getProperty("rp2"))};
-            rougeCommun =Integer.parseInt((String) defaultProps.getProperty("rc1"));
+            rougeCommun = Integer.parseInt((String) defaultProps.getProperty("rc1"));
         } catch (FileNotFoundException ex) {
             MsgOutils.erreur("FileNotFoundException", "Fichier de configuration "
                     + "introuvable.\n Le serveur sera lancé avec une configuration par défaut.");
@@ -74,6 +74,7 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
     }
 
     private void fire() {
+        List<CarrefourClientInterface> viewsCopy = new ArrayList<CarrefourClientInterface>(views);
         try {
             for (CarrefourClientInterface uneVue : views) {
                 try {
@@ -124,7 +125,7 @@ public class ServeurImplementation extends java.rmi.server.UnicastRemoteObject i
 
     @Override
     public void poussoir(int feu) throws RemoteException {
-        if (model.getEtat().getFeux(feu%2) == FeuEnum.VERT) {
+        if (model.getEtat().getFeux(feu % 2) == FeuEnum.VERT) {
             model.poussoir(feu);
         }
     }

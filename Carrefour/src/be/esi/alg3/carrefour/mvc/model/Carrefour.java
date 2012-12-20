@@ -30,10 +30,6 @@ public final class Carrefour {
     private int rougeCommun;
     private boolean ok;
 
-    public boolean isOk() {
-        return ok;
-    }
-
     public Carrefour(int[] vert, int[] orange, int[] rouge, int rougeCommun, int vitesseExecution) {
         views = new ArrayList<CarrefourVueInterface>();
         etat = new CarrefourEtat();
@@ -75,7 +71,6 @@ public final class Carrefour {
     }
 
     private void changeEtat() {
-        checkAccident();
         for (int i = 0; i < 4; i++) {
             switch (etat.getFeux(i).getValue()) {
                 case 0:
@@ -158,7 +153,8 @@ public final class Carrefour {
     }
 
     private void fire() {
-        for (CarrefourVueInterface vue : views) {
+        List<CarrefourVueInterface> viewsCopy = new ArrayList<CarrefourVueInterface>(views);
+        for (CarrefourVueInterface vue : viewsCopy) {
             vue.update();
         }
     }
@@ -192,27 +188,46 @@ public final class Carrefour {
             }
         }
     }
-    private void verification(){
-         if (etat.getFeux(FEUX_VEHICULE_N_S).getColor().equals(Color.green)) {
-                if (etat.getFeux(FEUX_VEHICULE_E_O).getColor().equals(Color.green) || etat.getFeux(FEUX_VEHICULE_E_O).getColor().equals(Color.orange)) {
-                    ok = false;
-                }
-                if (etat.getFeux(FEUX_PIETON_N_S).getColor().equals(Color.green) || etat.getFeux(FEUX_PIETON_N_S).getColor().equals(Color.orange)) {
-                    ok = false;
-                }
+
+    private void verification() {
+        if (etat.getFeux(FEUX_VEHICULE_N_S).getColor().equals(Color.green)) {
+            if (etat.getFeux(FEUX_VEHICULE_E_O).getColor().equals(Color.green) || etat.getFeux(FEUX_VEHICULE_E_O).getColor().equals(Color.orange)) {
+                ok = false;
             }
-            if (etat.getFeux(FEUX_VEHICULE_E_O).getColor().equals(Color.green)) {
-                if (etat.getFeux(FEUX_VEHICULE_N_S).getColor().equals(Color.green) || etat.getFeux(FEUX_VEHICULE_N_S).getColor().equals(Color.orange)) {
-                    ok = false;
-                }
-                if (etat.getFeux(FEUX_PIETON_E_O).getColor().equals(Color.green) || etat.getFeux(FEUX_PIETON_E_O).getColor().equals(Color.orange)) {
-                    ok = false;
-                }
+            if (etat.getFeux(FEUX_PIETON_N_S).getColor().equals(Color.green) || etat.getFeux(FEUX_PIETON_N_S).getColor().equals(Color.orange)) {
+                ok = false;
             }
+        }
+        if (etat.getFeux(FEUX_VEHICULE_E_O).getColor().equals(Color.green)) {
+            if (etat.getFeux(FEUX_VEHICULE_N_S).getColor().equals(Color.green) || etat.getFeux(FEUX_VEHICULE_N_S).getColor().equals(Color.orange)) {
+                ok = false;
+            }
+            if (etat.getFeux(FEUX_PIETON_E_O).getColor().equals(Color.green) || etat.getFeux(FEUX_PIETON_E_O).getColor().equals(Color.orange)) {
+                ok = false;
+            }
+        }
+        if (etat.getFeux(FEUX_PIETON_N_S).getColor().equals(Color.green)) {
+            if (etat.getFeux(FEUX_VEHICULE_N_S).getColor().equals(Color.green) || etat.getFeux(FEUX_VEHICULE_N_S).getColor().equals(Color.orange)) {
+                ok = false;
+            }
+            if (etat.getFeux(FEUX_PIETON_E_O).getColor().equals(Color.green) || etat.getFeux(FEUX_PIETON_E_O).getColor().equals(Color.orange)) {
+                ok = false;
+            }
+        }
+        if (etat.getFeux(FEUX_PIETON_E_O).getColor().equals(Color.green)) {
+            if (etat.getFeux(FEUX_VEHICULE_E_O).getColor().equals(Color.green) || etat.getFeux(FEUX_VEHICULE_E_O).getColor().equals(Color.orange)) {
+                ok = false;
+            }
+            if (etat.getFeux(FEUX_PIETON_N_S).getColor().equals(Color.green) || etat.getFeux(FEUX_PIETON_N_S).getColor().equals(Color.orange)) {
+                ok = false;
+            }
+        }
     }
+
     public boolean checkAccident() {
-        while (rougeTimer[FEUX_VEHICULE_N_S] > 0) {
-           changeEtat();
+        while (rougeTimer[FEUX_VEHICULE_N_S] > 1) {
+            changeEtat();
+            verification();
         }
         return ok;
 
