@@ -39,7 +39,7 @@
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="33" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -150,9 +150,12 @@
         <Component class="javax.swing.JSlider" name="jSlider1">
           <Properties>
             <Property name="majorTickSpacing" type="int" value="100"/>
-            <Property name="maximum" type="int" value="10000"/>
-            <Property name="minimum" type="int" value="1"/>
-            <Property name="minorTickSpacing" type="int" value="1"/>
+            <Property name="maximum" type="int" value="1000"/>
+            <Property name="minimum" type="int" value="100"/>
+            <Property name="minorTickSpacing" type="int" value="100"/>
+            <Property name="paintLabels" type="boolean" value="true"/>
+            <Property name="paintTicks" type="boolean" value="true"/>
+            <Property name="snapToTicks" type="boolean" value="true"/>
             <Property name="toolTipText" type="java.lang.String" value="vitesse d&apos;un tick qui vaut en r&#xe9;alit&#xe9; 1 seconde"/>
             <Property name="value" type="int" value="1000"/>
           </Properties>

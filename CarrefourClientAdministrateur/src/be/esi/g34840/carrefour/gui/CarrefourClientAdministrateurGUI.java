@@ -4,6 +4,7 @@
  */
 package be.esi.g34840.carrefour.gui;
 
+import be.esi.alg3.carrefour.mvc.model.Carrefour;
 import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
 import be.esi.g34840.carrefour.concept.VueClientAdmin;
@@ -23,7 +24,9 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JFrame;
+import javax.swing.JSlider;
 import javax.swing.JTable;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /**
  *
@@ -41,6 +44,8 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     private Led led;
     private ArrayList<VueClientAdmin> vues;
     private CarrefourEtat etat;
+    private int[] vert, orange, rouge;
+    private int rougeCommun;
 
     /**
      * Creates new form CarrefourClientAdministrateurGUI
@@ -469,31 +474,41 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                     }
                 }
             }
-
-            if (MsgOutils.confirmation("Sauvegarde", "Voulez-vous sauvegarder les données?")) {
-                FileOutputStream out;
-                try {
-                    out = new FileOutputStream("../CarrefourInterface.properties");
-                    defaultProps.setProperty("v1", jTable1.getValueAt(0, 1).toString());
-                    defaultProps.setProperty("v2", jTable1.getValueAt(1, 1).toString());
-                    defaultProps.setProperty("vp1", jTable1.getValueAt(2, 1).toString());
-                    defaultProps.setProperty("vp2", jTable1.getValueAt(3, 1).toString());
-                    defaultProps.setProperty("o1", jTable1.getValueAt(0, 2).toString());
-                    defaultProps.setProperty("o2", jTable1.getValueAt(1, 2).toString());
-                    defaultProps.setProperty("op1", jTable1.getValueAt(2, 2).toString());
-                    defaultProps.setProperty("op2", jTable1.getValueAt(3, 2).toString());
-                    defaultProps.setProperty("r1", jTable1.getValueAt(0, 3).toString());
-                    defaultProps.setProperty("r2", jTable1.getValueAt(1, 3).toString());
-                    defaultProps.setProperty("rp1", jTable1.getValueAt(2, 3).toString());
-                    defaultProps.setProperty("rp2", jTable1.getValueAt(3, 3).toString());
-                    defaultProps.setProperty("rc1", "" + jSlider1.getValue());
+            vert = new int[]{(Integer) jTable1.getValueAt(0, 1), (Integer) jTable1.getValueAt(1, 1), (Integer) jTable1.getValueAt(2, 1), (Integer) jTable1.getValueAt(3, 1)};
+            orange = new int[]{(Integer) jTable1.getValueAt(0, 2), (Integer) jTable1.getValueAt(1, 2), (Integer) jTable1.getValueAt(2, 2), (Integer) jTable1.getValueAt(3, 2)};
+            rouge = new int[]{(Integer) jTable1.getValueAt(0, 3), (Integer) jTable1.getValueAt(1, 3), (Integer) jTable1.getValueAt(2, 3), (Integer) jTable1.getValueAt(3, 3)};
+            rougeCommun = jSlider1.getValue();
+            Carrefour modele = new Carrefour(vert, orange, rouge, rougeCommun, 1);
+            
+            modele.stop();
+            if (!modele.isOk()) {
+                MsgOutils.erreur("Problème de circulation", "Il y a un risque d'accident.");
+            } else {
+                if (MsgOutils.confirmation("Sauvegarde", "Voulez-vous sauvegarder les données?")) {
+                    FileOutputStream out;
                     try {
-                        defaultProps.store(out, "--saveConfig--");
-                    } catch (IOException ex) {
-                        MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
+                        out = new FileOutputStream("../CarrefourInterface.properties");
+                        defaultProps.setProperty("v1", jTable1.getValueAt(0, 1).toString());
+                        defaultProps.setProperty("v2", jTable1.getValueAt(1, 1).toString());
+                        defaultProps.setProperty("vp1", jTable1.getValueAt(2, 1).toString());
+                        defaultProps.setProperty("vp2", jTable1.getValueAt(3, 1).toString());
+                        defaultProps.setProperty("o1", jTable1.getValueAt(0, 2).toString());
+                        defaultProps.setProperty("o2", jTable1.getValueAt(1, 2).toString());
+                        defaultProps.setProperty("op1", jTable1.getValueAt(2, 2).toString());
+                        defaultProps.setProperty("op2", jTable1.getValueAt(3, 2).toString());
+                        defaultProps.setProperty("r1", jTable1.getValueAt(0, 3).toString());
+                        defaultProps.setProperty("r2", jTable1.getValueAt(1, 3).toString());
+                        defaultProps.setProperty("rp1", jTable1.getValueAt(2, 3).toString());
+                        defaultProps.setProperty("rp2", jTable1.getValueAt(3, 3).toString());
+                        defaultProps.setProperty("rc1", "" + jSlider1.getValue());
+                        try {
+                            defaultProps.store(out, "--saveConfig--");
+                        } catch (IOException ex) {
+                            MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
+                        }
+                    } catch (FileNotFoundException ex) {
+                        MsgOutils.erreur("FileNotFoundException", "Fichier de configuration introuvable.");
                     }
-                } catch (FileNotFoundException ex) {
-                    MsgOutils.erreur("FileNotFoundException", "Fichier de configuration introuvable.");
                 }
             }
         } catch (NumberFormatException ex) {
@@ -503,12 +518,15 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         } catch (NullPointerException ex) {
             MsgOutils.erreur("NullPointerException", "Veuillez remplir toute les cases du tableaux !!!");
         }
-    }//GEN-LAST:event_saveBActionPerformed
 
-    public JTable getjTable1() {
+    }//GEN-LAST:event_saveBActionPerformed
+    public JTable getJTable1() {
         return jTable1;
     }
 
+    public JSlider getJSlider1() {
+        return jSlider1;
+    }
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         jSliderL.setText(jSlider1.getValue() + " s");
     }//GEN-LAST:event_jSlider1StateChanged
@@ -537,16 +555,22 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CarrefourClientAdministrateurGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CarrefourClientAdministrateurGUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CarrefourClientAdministrateurGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CarrefourClientAdministrateurGUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CarrefourClientAdministrateurGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CarrefourClientAdministrateurGUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CarrefourClientAdministrateurGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CarrefourClientAdministrateurGUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 

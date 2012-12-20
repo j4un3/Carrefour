@@ -27,9 +27,10 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
     public PrevisualisationGUI(CarrefourClientAdministrateurGUI gui) {
         super(new JFrame(), true);
         initComponents();
-        vert = new int[]{(Integer) gui.getjTable1().getValueAt(0, 1), (Integer) gui.getjTable1().getValueAt(1, 1), (Integer) gui.getjTable1().getValueAt(2, 1), (Integer) gui.getjTable1().getValueAt(3, 1)};
-        orange = new int[]{(Integer) gui.getjTable1().getValueAt(0, 2), (Integer) gui.getjTable1().getValueAt(1, 2), (Integer) gui.getjTable1().getValueAt(2, 2), (Integer) gui.getjTable1().getValueAt(3, 2)};
-        rouge = new int[]{(Integer) gui.getjTable1().getValueAt(0, 3), (Integer) gui.getjTable1().getValueAt(1, 3), (Integer) gui.getjTable1().getValueAt(2, 3), (Integer) gui.getjTable1().getValueAt(3, 3)};
+        vert = new int[]{(Integer) gui.getJTable1().getValueAt(0, 1), (Integer) gui.getJTable1().getValueAt(1, 1), (Integer) gui.getJTable1().getValueAt(2, 1), (Integer) gui.getJTable1().getValueAt(3, 1)};
+        orange = new int[]{(Integer) gui.getJTable1().getValueAt(0, 2), (Integer) gui.getJTable1().getValueAt(1, 2), (Integer) gui.getJTable1().getValueAt(2, 2), (Integer) gui.getJTable1().getValueAt(3, 2)};
+        rouge = new int[]{(Integer) gui.getJTable1().getValueAt(0, 3), (Integer) gui.getJTable1().getValueAt(1, 3), (Integer) gui.getJTable1().getValueAt(2, 3), (Integer) gui.getJTable1().getValueAt(3, 3)};
+        rougeCommun = gui.getJSlider1().getValue();
         feuPieton3.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Piéton Nord-Sud"));
         feuPieton3.setFeuNS(true);
         feuPieton4.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Piéton Est-Ouest"));
@@ -98,9 +99,12 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuration de la prévisualisation"));
 
         jSlider1.setMajorTickSpacing(100);
-        jSlider1.setMaximum(10000);
-        jSlider1.setMinimum(1);
-        jSlider1.setMinorTickSpacing(1);
+        jSlider1.setMaximum(1000);
+        jSlider1.setMinimum(100);
+        jSlider1.setMinorTickSpacing(100);
+        jSlider1.setPaintLabels(true);
+        jSlider1.setPaintTicks(true);
+        jSlider1.setSnapToTicks(true);
         jSlider1.setToolTipText("vitesse d'un tick qui vaut en réalité 1 seconde");
         jSlider1.setValue(1000);
         jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -171,7 +175,7 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -179,6 +183,7 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         if (jToggleButton1.isSelected()) {
+            jSlider1.setEnabled(false);
             jToggleButton1.setText("Stop");
             carrefour = new Carrefour(vert, orange, rouge, rougeCommun, jSlider1.getValue());
             carrefour.abonne(this);
