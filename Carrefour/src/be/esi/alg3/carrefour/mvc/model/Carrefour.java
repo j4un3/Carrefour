@@ -25,10 +25,11 @@ public final class Carrefour {
     private boolean warning;
     private int cptTest;
     private int[] vertTimer, saveTimerVert, orangeTimer, saveTimerOrange, rougeTimer,
-            saveTimerRouge, rougeCommunTimer, saveRougeCommunTimer;
+            saveTimerRouge, rougeCommunTimer;
     private List<CarrefourVueInterface> views;
     private int rougeCommun;
     private boolean ok;
+    private boolean allRed;
 
     public Carrefour(int[] vert, int[] orange, int[] rouge, int rougeCommun, int vitesseExecution) {
         views = new ArrayList<CarrefourVueInterface>();
@@ -37,8 +38,8 @@ public final class Carrefour {
         this.saveTimerRouge = rouge;
         this.saveTimerVert = vert;
         this.rougeCommun = rougeCommun;
-        this.saveTimerRouge[FEUX_VEHICULE_N_S] = this.saveTimerRouge[FEUX_VEHICULE_N_S] + rougeCommun;
-        this.saveTimerRouge[FEUX_PIETON_E_O] = this.saveTimerRouge[FEUX_PIETON_E_O] + rougeCommun;
+        this.saveTimerRouge[FEUX_VEHICULE_N_S] += rougeCommun;
+        this.saveTimerRouge[FEUX_PIETON_E_O] += rougeCommun;
         warning = false;
         ok = true;
         this.reset();
@@ -94,14 +95,20 @@ public final class Carrefour {
 
     public void setWarning(boolean warning) {
         this.warning = warning;
-        if (warning) {
-            for (int i = 0; i < 4; i++) {
-                etat.setFeux(i, FeuEnum.WARNING);
+        allRed = true;
+        if (etat.getFeux(FEUX_PIETON_N_S).getValue() == 2
+                && etat.getFeux(FEUX_PIETON_E_O).getValue() == 2
+                && etat.getFeux(FEUX_VEHICULE_E_O).getValue() == 2
+                && etat.getFeux(FEUX_VEHICULE_N_S).getValue() == 2) {
+            if (warning) {
+                for (int i = 0; i < 4; i++) {
+                    etat.setFeux(i, FeuEnum.WARNING);
+                }
+            } else {
+                reset();
             }
-        } else {
-            reset();
+            fire();
         }
-        fire();
     }
 
     @Override
@@ -138,11 +145,14 @@ public final class Carrefour {
     private void rouge(int pos) {
         if (--rougeTimer[pos] < 1) {
             etat.setFeux(pos, FeuEnum.VERT);
-            resetTimer(pos);
+            if (!allRed) {
+                resetTimer(pos);
+            }
         }
     }
 
     private void reset() {
+        allRed = false;
         this.orangeTimer = this.saveTimerOrange.clone();
         this.vertTimer = this.saveTimerVert.clone();
         this.rougeTimer = this.saveTimerRouge.clone();
@@ -224,12 +234,22 @@ public final class Carrefour {
         }
     }
 
+    public void reboot(int[] vert, int[] orange, int[] rouge, int rougeCommun) {
+        this.saveTimerVert = vert;
+        this.saveTimerOrange = orange;
+        this.saveTimerRouge = rouge;
+        this.saveTimerRouge[FEUX_VEHICULE_N_S] += rougeCommun;
+        this.saveTimerRouge[FEUX_PIETON_E_O] += rougeCommun;
+        this.rougeCommun = rougeCommun;
+        allRed = true;
+        reset();
+    }
+
     public boolean checkAccident() {
         while (rougeTimer[FEUX_VEHICULE_N_S] > 1) {
             changeEtat();
             verification();
         }
         return ok;
-
     }
 }
