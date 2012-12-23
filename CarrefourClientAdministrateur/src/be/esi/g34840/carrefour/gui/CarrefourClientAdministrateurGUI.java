@@ -17,14 +17,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JTable;
@@ -60,26 +57,54 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             defaultProps = new Properties();
             in = new FileInputStream("../CarrefourInterface.properties");
             defaultProps.load(in);
-            initComponents();
-            client = new VueCarrefourClientAdministrateur(this);
-            this.serveur.abonne(client);
-            init();
-        } catch (ConnectException ex) {
-            MsgOutils.erreur("ConnectException", "Problème de connection avec le serveur.\n L'application va se terminer.");
-            System.exit(0);
         } catch (FileNotFoundException ex) {
-            MsgOutils.erreur("FileNotFoundException", "Fichier de configuration introuvable.");
+            try {
+                MsgOutils.erreur("FileNotFoundException", "Fichier de configuration introuvable.");
+                FileOutputStream out = null;
+                try {
+                    out = new FileOutputStream("../CarrefourInterface.properties");
+                } catch (FileNotFoundException ex1) {
+                    MsgOutils.erreur("FileNotFoundException", "Fichier de configuration introuvable.");
+                }
+                defaultProps.setProperty("v1", "10");
+                defaultProps.setProperty("v2", "10");
+                defaultProps.setProperty("vp1", "10");
+                defaultProps.setProperty("vp2", "10");
+                defaultProps.setProperty("o1", "5");
+                defaultProps.setProperty("o2", "5");
+                defaultProps.setProperty("op1", "5");
+                defaultProps.setProperty("op2", "5");
+                defaultProps.setProperty("r1", "17");
+                defaultProps.setProperty("r2", "17");
+                defaultProps.setProperty("rp1", "17");
+                defaultProps.setProperty("rp2", "17");
+                defaultProps.setProperty("rc1", "2");
+                defaultProps.setProperty("cycle", "32");
+                defaultProps.setProperty("minValueCommun", "5");
+                defaultProps.setProperty("maxValueCommun", "25");
+                defaultProps.store(out, "--saveConfig--");
+            } catch (IOException ex1) {
+                MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
+            }
         } catch (IOException ex) {
             MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
-            saveB.setEnabled(false);
         } finally {
             try {
                 in.close();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
-                saveB.setEnabled(false);
             }
         }
+        initComponents();
+        try {
+            client = new VueCarrefourClientAdministrateur(this);
+            this.serveur.abonne(client);
+
+        } catch (RemoteException ex) {
+            MsgOutils.erreur("ConnectException", "Problème de connection avec le serveur.\n L'application va se terminer.");
+            System.exit(0);
+        }
+        init();
         timer = new Timer();
         timerTask = new TimerTask() {
             @Override
@@ -93,19 +118,22 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 }
             }
         };
-        timer.schedule(timerTask, 0, 5000);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                try {
-                    serveur.desabonne(client);
-                    System.exit(0);
-                } catch (RemoteException ex) {
-                    MsgOutils.erreur("RemoteException", ex.getMessage());
-                    System.exit(0);
-                }
-            }
-        });
+
+        timer.schedule(timerTask,
+                0, 5000);
+        addWindowListener(
+                new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        try {
+                            serveur.desabonne(client);
+                            System.exit(0);
+                        } catch (RemoteException ex) {
+                            MsgOutils.erreur("RemoteException", ex.getMessage());
+                            System.exit(0);
+                        }
+                    }
+                });
     }
 
     public CarrefourEtat getEtat() {
@@ -630,6 +658,8 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
+
 
 
                 }
