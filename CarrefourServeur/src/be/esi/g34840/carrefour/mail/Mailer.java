@@ -1,0 +1,62 @@
+package be.esi.g34840.carrefour.mail;
+
+import be.esi.g34840.carrefour.exception.MailException;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+public class Mailer {
+
+    final static String username = "noreplycarrefouralg@gmail.com";
+    final static String password = "a1z2e3r4!";
+
+    public static void send(String destinataires, String sujet, String corp) throws MailException {
+        send(destinataires, sujet, corp, false);
+
+    }
+
+    public static void send(String destinataires, String sujet, String corp, boolean html) throws MailException {
+
+        if (sujet == null || corp == null || destinataires == null || sujet.equals("") || corp.equals("") || destinataires.equals("")) {
+            throw new MailException("Le sujet, le corpt et le destinataire ne peuvent pas etre vide ou null");
+        }
+        try {
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
+
+            Session session = Session.getInstance(props,
+                    new javax.mail.Authenticator() {
+                        @Override
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(username, password);
+                        }
+                    });
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(destinataires));
+            message.setSubject(sujet);
+            if (html) {
+                message.setContent(corp, "text/html");
+            } else {
+                message.setText(corp);
+            }
+
+            Transport.send(message);
+        } catch (AddressException e) {
+            throw new MailException("Adresse invalide\n" + e.getMessage());
+        } catch (MessagingException e) {
+            throw new MailException("Erreur dans le message\n" + e.getMessage());
+        }
+    }
+}

@@ -11,7 +11,6 @@ import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
 import be.esi.g34840.carrefour.business.CarrefourClientInterface;
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
 import be.esi.gui.outils.MsgOutils;
-import com.sun.xml.internal.ws.resources.ModelerMessages;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
