@@ -27,8 +27,8 @@ public class VueTpsReel extends javax.swing.JDialog implements VueClientAdmin {
         super(new JFrame(), false);
         initComponents();
         panel = new PanelTpsReel(admin);
-        admin.abonne(this);
         setContentPane(panel);
+        admin.abonne(this);
     }
 
     /**

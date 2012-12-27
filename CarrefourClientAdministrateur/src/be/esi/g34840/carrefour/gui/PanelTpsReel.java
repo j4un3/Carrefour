@@ -20,7 +20,7 @@ public class PanelTpsReel extends JComponent {
             FEUX_VEHICULE_E_O = 1, FEUX_VEHICULE_N_S = 0;
     private Image bg;
     private CarrefourClientAdministrateurGUI admin;
-    private boolean ok;
+    private boolean ok, warning;
 
     /**
      * Creates new form PanelTpsReel
@@ -28,6 +28,7 @@ public class PanelTpsReel extends JComponent {
     public PanelTpsReel(CarrefourClientAdministrateurGUI admin) {
         this.admin = admin;
         ok = true;
+        warning = false;
         initComponents();
         feuOn(true);
         bg = new ImageIcon("bg.png").getImage();
@@ -359,7 +360,7 @@ public class PanelTpsReel extends JComponent {
                     setFeuOrange(i);
                     break;
                 case 5:
-                    setFeuWarning(i);
+                    setFeuWarning();
             }
         }
     }
@@ -421,7 +422,19 @@ public class PanelTpsReel extends JComponent {
         }
     }
 
-    private void setFeuWarning(int i) {
-        
+    private void setFeuWarning() {
+        if (warning) {
+            ledNO.setColor(Color.black);
+            ledSO.setColor(Color.black);
+            ledEO.setColor(Color.black);
+            ledOO.setColor(Color.black);
+        } else {
+            ledSO.setColor(Color.orange);
+            ledNO.setColor(Color.orange);
+            ledEO.setColor(Color.orange);
+            ledOO.setColor(Color.orange);
+        }
+            warning = !warning;
+
     }
 }

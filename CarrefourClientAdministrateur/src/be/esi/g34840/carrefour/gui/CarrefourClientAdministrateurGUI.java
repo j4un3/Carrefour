@@ -80,19 +80,27 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 defaultProps.setProperty("rp2", "17");
                 defaultProps.setProperty("rc1", "2");
                 defaultProps.setProperty("cycle", "32");
-                defaultProps.setProperty("minValueCommun", "5");
-                defaultProps.setProperty("maxValueCommun", "25");
+                defaultProps.setProperty("minValueCommun", "1");
+                defaultProps.setProperty("maxValueCommun", "10");
+                defaultProps.setProperty("minValue", "5");
+                defaultProps.setProperty("maxValue", "25");
                 defaultProps.store(out, "--saveConfig--");
             } catch (IOException ex1) {
-                MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
+                MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du "
+                        + "fichier de configuration s'est mal passée.\n Un fichier de configuration à été crée à votre place veuillez inserer à la fin du fichier email=VotreEmail@mail.com pour obtenir les avertissements par email");
             }
         } catch (IOException ex) {
-            MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
+            MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du"
+                    + " fichier de configuration s'est mal passée.\n Un fichier"
+                    + " de configuration à été crée à votre place veuillez inserer "
+                    + "à la fin du fichier email=VotreEmail@mail.com pour obtenir "
+                    + "les avertissements par email");
         } finally {
             try {
                 in.close();
             } catch (Exception ex) {
-                MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
+                MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du "
+                        + "fichier de configuration s'est mal passée.");
             }
         }
         initComponents();
@@ -101,7 +109,8 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             this.serveur.abonne(client);
 
         } catch (RemoteException ex) {
-            MsgOutils.erreur("ConnectException", "Problème de connection avec le serveur.\n L'application va se terminer.");
+            MsgOutils.erreur("ConnectException", "Problème de connection avec "
+                    + "le serveur.\n L'application va se terminer.");
             System.exit(0);
         }
         init();
@@ -112,9 +121,10 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                 try {
                     serveur.isAlive();
                 } catch (RemoteException ex) {
-                    timerTask.cancel();
-                    MsgOutils.warning("Attention RemoteException", "Vous avez perdu la connection avec le serveur.\n Le contrôle du carrefour en temps réel n'est plus disponible.\n Mais vous pouvez toujours configurer ou voir l'historique du carrefour.");
-                    cycleB.setEnabled(false);
+                    MsgOutils.warning("Attention RemoteException", "Vous avez "
+                            + "perdu la connection avec le serveur.\n"
+                            + "Le programme va se fermer");
+                    System.exit(0);
                 }
             }
         };
@@ -167,16 +177,21 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     }
 
     private void checkCycleJTable() {
-        jTable1.setValueAt((Integer) jTable1.getValueAt(0, 1) + (Integer) jTable1.getValueAt(0, 2) + (Integer) jTable1.getValueAt(0, 3), 0, 4);
-        jTable1.setValueAt((Integer) jTable1.getValueAt(1, 1) + (Integer) jTable1.getValueAt(1, 2) + (Integer) jTable1.getValueAt(1, 3), 1, 4);
-        jTable1.setValueAt((Integer) jTable1.getValueAt(2, 1) + (Integer) jTable1.getValueAt(2, 2) + (Integer) jTable1.getValueAt(2, 3), 2, 4);
-        jTable1.setValueAt((Integer) jTable1.getValueAt(3, 1) + (Integer) jTable1.getValueAt(3, 2) + (Integer) jTable1.getValueAt(3, 3), 3, 4);
+        jTable1.setValueAt((Integer) jTable1.getValueAt(0, 1) + 
+                (Integer) jTable1.getValueAt(0, 2) + (Integer) jTable1.getValueAt(0, 3), 0, 4);
+        jTable1.setValueAt((Integer) jTable1.getValueAt(1, 1) + 
+                (Integer) jTable1.getValueAt(1, 2) + (Integer) jTable1.getValueAt(1, 3), 1, 4);
+        jTable1.setValueAt((Integer) jTable1.getValueAt(2, 1) + 
+                (Integer) jTable1.getValueAt(2, 2) + (Integer) jTable1.getValueAt(2, 3), 2, 4);
+        jTable1.setValueAt((Integer) jTable1.getValueAt(3, 1) + 
+                (Integer) jTable1.getValueAt(3, 2) + (Integer) jTable1.getValueAt(3, 3), 3, 4);
 
     }
 
     public void update() {
-        try {
+        try {          
             etat = serveur.getEtat();
+
             feuVehiculeNSL.setText(etat.getFeux(FEUX_VEHICULE_N_S).getLibelle());
             feuVehiculeEOL.setText(etat.getFeux(FEUX_VEHICULE_E_O).getLibelle());
             feuPietonEOL.setText(etat.getFeux(FEUX_PIETON_E_O).getLibelle());
@@ -185,6 +200,7 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         } catch (RemoteException ex) {
             MsgOutils.erreur("RemoteException", "Vous avez perdu la connection avec le serveur.");
         }
+            
     }
 
     public void abonne(VueClientAdmin vue) {
@@ -431,6 +447,11 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
         feuPietonEOL.setText("1");
 
         historiqueB.setText("Historique");
+        historiqueB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                historiqueBActionPerformed(evt);
+            }
+        });
 
         cycleB.setText("Warning");
         cycleB.addActionListener(new java.awt.event.ActionListener() {
@@ -537,33 +558,46 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
             serveur.warning(cycleB.isSelected());
             cycleB.setText(cycleB.isSelected() ? "Cycle normal" : "Warning");
         } catch (RemoteException ex) {
-            MsgOutils.erreur("RemoteException", "Vous avez perdu la connection avec le serveur. L'application va se fermer ...");
+            MsgOutils.erreur("RemoteException", "Vous avez perdu la connection "
+                    + "avec le serveur. L'application va se fermer ...");
             System.exit(0);
         }
     }//GEN-LAST:event_cycleBActionPerformed
 
     private void saveBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBActionPerformed
         if (!checkValeursJTable()) {
-            MsgOutils.erreur("Problème de cycle", "Un de vos feux ne respecte pas la durée du cycle.");
+            MsgOutils.erreur("Problème de cycle", "Un des feux ne respecte "
+                    + "pas la durée du cycle.");
         } else {
             try {
                 for (int i = 0; i < 4; i++) {
                     for (int j = 1; j < 4; j++) {
                         if ((Integer) jTable1.getValueAt(i, j) < Integer.parseInt(
-                                defaultProps.getProperty("minValue")) || (Integer) jTable1.getValueAt(i, j) > Integer.parseInt(
+                                defaultProps.getProperty("minValue")) || 
+                                (Integer) jTable1.getValueAt(i, j) > Integer.parseInt(
                                 defaultProps.getProperty("maxValue"))) {
                             throw new NumberFormatException();
                         }
                     }
                 }
-                vert = new int[]{(Integer) jTable1.getValueAt(0, 1), (Integer) jTable1.getValueAt(1, 1), (Integer) jTable1.getValueAt(2, 1), (Integer) jTable1.getValueAt(3, 1)};
-                orange = new int[]{(Integer) jTable1.getValueAt(0, 2), (Integer) jTable1.getValueAt(1, 2), (Integer) jTable1.getValueAt(2, 2), (Integer) jTable1.getValueAt(3, 2)};
-                rouge = new int[]{(Integer) jTable1.getValueAt(0, 3), (Integer) jTable1.getValueAt(1, 3), (Integer) jTable1.getValueAt(2, 3), (Integer) jTable1.getValueAt(3, 3)};
+                vert = new int[]{(Integer) jTable1.getValueAt(0, 1), 
+                    (Integer) jTable1.getValueAt(1, 1), 
+                    (Integer) jTable1.getValueAt(2, 1), 
+                    (Integer) jTable1.getValueAt(3, 1)};
+                orange = new int[]{(Integer) jTable1.getValueAt(0, 2), 
+                    (Integer) jTable1.getValueAt(1, 2), 
+                    (Integer) jTable1.getValueAt(2, 2), 
+                    (Integer) jTable1.getValueAt(3, 2)};
+                rouge = new int[]{(Integer) jTable1.getValueAt(0, 3), 
+                    (Integer) jTable1.getValueAt(1, 3), 
+                    (Integer) jTable1.getValueAt(2, 3), 
+                    (Integer) jTable1.getValueAt(3, 3)};
                 rougeCommun = jSlider1.getValue();
                 Carrefour modele = new Carrefour(vert, orange, rouge, rougeCommun, 1000);
                 modele.stop();
                 if (!modele.checkAccident()) {
-                    MsgOutils.erreur("Problème de circulation", "Il y a un risque d'accident.");
+                    MsgOutils.erreur("Problème de circulation", "Il y a un risque d'accident.\n"
+                            + "Vous ne pouvez sauvergarder.");
                 } else {
                     if (MsgOutils.confirmation("Sauvegarde", "Voulez-vous sauvegarder les données?")) {
                         FileOutputStream out;
@@ -587,10 +621,12 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                                 defaultProps.store(out, "--saveConfig--");
                                 serveur.reboot();
                             } catch (IOException ex) {
-                                MsgOutils.erreur("IOException", "L'ouverture ou la fermeture du fichier de configuration s'est mal passée.");
+                                MsgOutils.erreur("IOException", "L'ouverture"
+                                        + " ou la fermeture du fichier de configuration s'est mal passée.");
                             }
                         } catch (FileNotFoundException ex) {
-                            MsgOutils.erreur("FileNotFoundException", "Fichier de configuration introuvable.");
+                            MsgOutils.erreur("FileNotFoundException",
+                                    "Fichier de configuration introuvable.");
                         }
                     }
                 }
@@ -599,16 +635,25 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
                         + " valoir entre " + defaultProps.getProperty("minValue")
                         + " et " + defaultProps.getProperty("maxValue") + " secondes.");
             } catch (NullPointerException ex) {
-                MsgOutils.erreur("NullPointerException", "Veuillez remplir toute les cases du tableaux !!!");
+                MsgOutils.erreur("NullPointerException", "Veuillez remplir toutes les cases du tableaux.");
             }
         }
     }//GEN-LAST:event_saveBActionPerformed
     private boolean checkValeursJTable() {
-        int cycleVNS = (Integer) jTable1.getValueAt(0, 1) + (Integer) jTable1.getValueAt(0, 2) + (Integer) jTable1.getValueAt(0, 3);
-        int cycleVEO = (Integer) jTable1.getValueAt(1, 1) + (Integer) jTable1.getValueAt(1, 2) + (Integer) jTable1.getValueAt(1, 3);
-        int cyclePNS = (Integer) jTable1.getValueAt(2, 1) + (Integer) jTable1.getValueAt(2, 2) + (Integer) jTable1.getValueAt(2, 3);
-        int cyclePEO = (Integer) jTable1.getValueAt(3, 1) + (Integer) jTable1.getValueAt(3, 2) + (Integer) jTable1.getValueAt(3, 3);
-        if ((jSlider2.getValue() != cycleVNS) || (jSlider2.getValue() != cycleVEO) || (jSlider2.getValue() != cyclePNS) || (jSlider2.getValue() != cyclePEO)) {
+        int cycleVNS = (Integer) jTable1.getValueAt(0, 1) + 
+                (Integer) jTable1.getValueAt(0, 2) + 
+                (Integer) jTable1.getValueAt(0, 3);
+        int cycleVEO = (Integer) jTable1.getValueAt(1, 1) + 
+                (Integer) jTable1.getValueAt(1, 2) + 
+                (Integer) jTable1.getValueAt(1, 3);
+        int cyclePNS = (Integer) jTable1.getValueAt(2, 1) + 
+                (Integer) jTable1.getValueAt(2, 2) + 
+                (Integer) jTable1.getValueAt(2, 3);
+        int cyclePEO = (Integer) jTable1.getValueAt(3, 1) + 
+                (Integer) jTable1.getValueAt(3, 2) + 
+                (Integer) jTable1.getValueAt(3, 3);
+        if ((jSlider2.getValue() != cycleVNS) || (jSlider2.getValue() != cycleVEO) || 
+                (jSlider2.getValue() != cyclePNS) || (jSlider2.getValue() != cyclePEO)) {
             return false;
         }
         return true;
@@ -643,6 +688,12 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     private void jTable1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable1FocusGained
         checkCycleJTable();
     }//GEN-LAST:event_jTable1FocusGained
+
+    private void historiqueBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_historiqueBActionPerformed
+        Historique historique = new Historique(serveur);
+        historique.pack();
+        historique.setVisible(true);
+    }//GEN-LAST:event_historiqueBActionPerformed
 
     /**
      * @param args the command line arguments
@@ -722,4 +773,5 @@ public class CarrefourClientAdministrateurGUI extends javax.swing.JDialog {
     private javax.swing.JButton previsualB;
     private javax.swing.JButton saveB;
     // End of variables declaration//GEN-END:variables
+
 }

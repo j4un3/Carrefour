@@ -4,11 +4,9 @@
  */
 package be.esi.g34840.carrefour.gui;
 
-import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
 import be.esi.g34840.carrefour.implementation.VueCarrefourClientPieton;
 import be.esi.gui.outils.MsgOutils;
-import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.rmi.ConnectException;
