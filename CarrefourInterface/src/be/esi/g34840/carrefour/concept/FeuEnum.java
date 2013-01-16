@@ -2,11 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package be.esi.alg3.carrefour.mvc.concept;
+package be.esi.g34840.carrefour.concept;
 
 import java.awt.Color;
 
 /**
+ * Enumération d'un feu
  *
  * @author g34840
  */
@@ -28,14 +29,29 @@ public enum FeuEnum {
         this.color = color;
     }
 
+    /**
+     * Retourne le libellé d'un feu
+     *
+     * @return libelle le libellé d'un feu
+     */
     public String getLibelle() {
         return libelle;
     }
 
+    /**
+     * Retourne la valeur d'un feu
+     *
+     * @return value la valeur d'un feu
+     */
     public int getValue() {
         return value;
     }
 
+    /**
+     * Retourne la couleur d'un feu
+     *
+     * @return color la couleur d'un feu
+     */
     public Color getColor() {
         return color;
     }

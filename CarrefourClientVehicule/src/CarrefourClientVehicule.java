@@ -3,14 +3,14 @@
  * and open the template in the editor.
  */
 
-
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
 import be.esi.g34840.carrefour.gui.CarrefourClientVehiculeGUI;
 import consoleaddition.LocalisationDialog;
 
 /**
+ * Classe principale permettant de lancer un client véhicule
  *
- * @author j4un3
+ * @author g34840
  */
 public class CarrefourClientVehicule {
 
@@ -24,6 +24,7 @@ public class CarrefourClientVehicule {
         CarrefourServeurInterface carrefour = (CarrefourServeurInterface) config.getObjet();
         CarrefourClientVehiculeGUI frame = new CarrefourClientVehiculeGUI(carrefour);
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 }

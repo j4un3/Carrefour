@@ -16,6 +16,8 @@ import java.util.TimerTask;
 import javax.swing.JFrame;
 
 /**
+ * Classe qui permet au client piéton d'observer selon sa vue et d'interagir avec le modèle
+ * via le bouton poussoire 
  *
  * @author g34840
  */
@@ -26,15 +28,14 @@ public class CarrefourClientPietonGUI extends javax.swing.JDialog {
     private VueCarrefourClientPieton client;
     private Timer timer;
     private TimerTask timerTask;
-    private boolean feuNS;
 
     /**
      * Creates new form CarrefourClientPietonGUI
      */
     public CarrefourClientPietonGUI(final CarrefourServeurInterface serveur) {
         super(new JFrame(), false);
-        feuNS = true;
         timer = new Timer();
+        //Permet de rester en contact avec le serveur, si celui-ci n'est plus on-line on bascule en mode warning
         timerTask = new TimerTask() {
             @Override
             public void run() {
@@ -45,6 +46,7 @@ public class CarrefourClientPietonGUI extends javax.swing.JDialog {
                 }
             }
         };
+        // verifie la connection avec le serveur tout les 5 secondes
         timer.schedule(timerTask, 0, 5000);
         initComponents();
         feuPieton1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Piéton Nord-Sud"));
@@ -52,6 +54,7 @@ public class CarrefourClientPietonGUI extends javax.swing.JDialog {
             this.serveur = serveur;
             this.client = new VueCarrefourClientPieton(this);
             serveur.abonne(client);
+            // Permet de se désabonner une fois la fenêtre fermée.
             addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
@@ -73,12 +76,21 @@ public class CarrefourClientPietonGUI extends javax.swing.JDialog {
         }
     }
 
+    /**
+     * Permet de passer en mode warning
+     */
     private void warning() {
         timerTask.cancel();
         poussoirB.setEnabled(false);
         feuPieton1.setFeuWarning();
     }
 
+    /**
+     * Methode qui reçoit les changements du serveur
+     *
+     * @throws RemoteException si il y a un problème de connection avec le
+     * serveur
+     */
     public void update() throws RemoteException {
         feuPieton1.update(serveur.getEtat());
     }
@@ -93,56 +105,56 @@ public class CarrefourClientPietonGUI extends javax.swing.JDialog {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        jPanel2 = new javax.swing.JPanel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jPanel3 = new javax.swing.JPanel();
+        optionP = new javax.swing.JPanel();
+        radioANSB = new javax.swing.JRadioButton();
+        radioAEOB = new javax.swing.JRadioButton();
+        boutonP = new javax.swing.JPanel();
         poussoirB = new javax.swing.JButton();
         feuPieton1 = new be.esi.g34840.carrefour.gui.FeuPieton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Option Axe"));
+        optionP.setBorder(javax.swing.BorderFactory.createTitledBorder("Option Axe"));
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setSelected(true);
-        jRadioButton1.setText("Axe Nord-Sud");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(radioANSB);
+        radioANSB.setSelected(true);
+        radioANSB.setText("Axe Nord-Sud");
+        radioANSB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                radioANSBActionPerformed(evt);
             }
         });
 
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setText("Axe Est-Ouest");
-        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(radioAEOB);
+        radioAEOB.setText("Axe Est-Ouest");
+        radioAEOB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton2ActionPerformed(evt);
+                radioAEOBActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout optionPLayout = new javax.swing.GroupLayout(optionP);
+        optionP.setLayout(optionPLayout);
+        optionPLayout.setHorizontalGroup(
+            optionPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(optionPLayout.createSequentialGroup()
                 .addContainerGap(51, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jRadioButton2, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(optionPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(radioANSB, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(radioAEOB, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        optionPLayout.setVerticalGroup(
+            optionPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(optionPLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jRadioButton1)
+                .addComponent(radioANSB)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton2))
+                .addComponent(radioAEOB))
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Bouton Poussoir"));
+        boutonP.setBorder(javax.swing.BorderFactory.createTitledBorder("Bouton Poussoir"));
 
         poussoirB.setText("Push");
         poussoirB.addActionListener(new java.awt.event.ActionListener() {
@@ -151,18 +163,18 @@ public class CarrefourClientPietonGUI extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout boutonPLayout = new javax.swing.GroupLayout(boutonP);
+        boutonP.setLayout(boutonPLayout);
+        boutonPLayout.setHorizontalGroup(
+            boutonPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(boutonPLayout.createSequentialGroup()
                 .addGap(46, 46, 46)
                 .addComponent(poussoirB)
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        boutonPLayout.setVerticalGroup(
+            boutonPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(boutonPLayout.createSequentialGroup()
                 .addGap(34, 34, 34)
                 .addComponent(poussoirB)
                 .addContainerGap(37, Short.MAX_VALUE))
@@ -172,41 +184,54 @@ public class CarrefourClientPietonGUI extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(optionP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(boutonP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(feuPieton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jPanel2, jPanel3});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {boutonP, optionP});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(feuPieton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(optionP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(boutonP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+    /**
+     * Permet de basculer sur l'axe Nord-Sud
+     *
+     * @param evt
+     */
+    private void radioANSBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioANSBActionPerformed
         feuPieton1.setFeuNS(true);
         feuPieton1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Piéton Nord-Sud"));
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
-
-    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+    }//GEN-LAST:event_radioANSBActionPerformed
+    /**
+     * Permet de basculer sur l'axe Est-Ouest
+     *
+     * @param evt
+     */
+    private void radioAEOBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAEOBActionPerformed
         feuPieton1.setFeuNS(false);
         feuPieton1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Piéton Est-Ouest"));
 
-    }//GEN-LAST:event_jRadioButton2ActionPerformed
-
+    }//GEN-LAST:event_radioAEOBActionPerformed
+    /**
+     * Permet d'actionner le bouton poussoir
+     *
+     * @param evt
+     */
     private void poussoirBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_poussoirBActionPerformed
         try {
-            serveur.poussoir(feuNS ? FEUX_PIETON_N_S : FEUX_PIETON_E_O);
+            serveur.poussoir(feuPieton1.getFeuNS() ? FEUX_PIETON_N_S : FEUX_PIETON_E_O);
         } catch (RemoteException ex) {
             MsgOutils.erreur("RemoteException", ex.getMessage());
         }
@@ -254,12 +279,12 @@ public class CarrefourClientPietonGUI extends javax.swing.JDialog {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel boutonP;
     private javax.swing.ButtonGroup buttonGroup1;
     private be.esi.g34840.carrefour.gui.FeuPieton feuPieton1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JPanel optionP;
     private javax.swing.JButton poussoirB;
+    private javax.swing.JRadioButton radioAEOB;
+    private javax.swing.JRadioButton radioANSB;
     // End of variables declaration//GEN-END:variables
 }

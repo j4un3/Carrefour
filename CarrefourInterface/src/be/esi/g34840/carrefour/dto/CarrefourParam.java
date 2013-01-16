@@ -2,15 +2,18 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package be.esi.alg3.carrefour.mvc.model;
+package be.esi.g34840.carrefour.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
+ * Classe DTO(Data Transfert Object) qui permet de simplifier le transferts de
+ * données entre les sous-systèmes de l'application
  *
  * @author J4un3
  */
-public class CarrefourParam implements Serializable{
+public class CarrefourParam extends CarrefourSimulation implements Serializable {
 
     private int feuVertVehiculeNordSud;
     private int feuVertVehiculeEstOuest;
@@ -28,7 +31,8 @@ public class CarrefourParam implements Serializable{
     private int feuRougePietonEstOuest;
     private int feuRougeCommun;
 
-    public CarrefourParam(int feuVertVehiculeNordSud, int feuVertVehiculeEstOuest, int feuVertPietonNordSud, int feuVertPietonEstOuest, int feuOrangeVehiculeNordSud, int feuOrangeVehiculeEstOuest, int feuOrangePietonNordSud, int feuOrangePietonEstOuest, int feuRougeVehiculeNordSud, int feuRougeVehiculeEstOuest, int feuRougePietonNordSud, int feuRougePietonEstOuest, int feuRougeCommun) {
+    public CarrefourParam(int feuVertVehiculeNordSud, int feuVertVehiculeEstOuest, int feuVertPietonNordSud, int feuVertPietonEstOuest, int feuOrangeVehiculeNordSud, int feuOrangeVehiculeEstOuest, int feuOrangePietonNordSud, int feuOrangePietonEstOuest, int feuRougeVehiculeNordSud, int feuRougeVehiculeEstOuest, int feuRougePietonNordSud, int feuRougePietonEstOuest, int feuRougeCommun,Date date) {
+        super(date);
         this.feuVertVehiculeNordSud = feuVertVehiculeNordSud;
         this.feuVertVehiculeEstOuest = feuVertVehiculeEstOuest;
         this.feuVertPietonNordSud = feuVertPietonNordSud;
@@ -163,5 +167,9 @@ public class CarrefourParam implements Serializable{
     public void setFeuRougeCommun(int feuRougeCommun) {
         this.feuRougeCommun = feuRougeCommun;
     }
-    
+
+    @Override
+    public String toString() {
+        return "CarrefourParam{" + "feuVertVehiculeNordSud=" + feuVertVehiculeNordSud + ", feuVertVehiculeEstOuest=" + feuVertVehiculeEstOuest + ", feuVertPietonNordSud=" + feuVertPietonNordSud + ", feuVertPietonEstOuest=" + feuVertPietonEstOuest + ", feuOrangeVehiculeNordSud=" + feuOrangeVehiculeNordSud + ", hiculeEstOuest=" + hiculeEstOuest + ", feuOrangePietonNordSud=" + feuOrangePietonNordSud + ", feuOrangeVehiculeEstOuest=" + feuOrangeVehiculeEstOuest + ", etonEstOuest=" + etonEstOuest + ", feuRougeVehiculeNordSud=" + feuRougeVehiculeNordSud + ", feuOrangePietonEstOuest=" + feuOrangePietonEstOuest + ", feuRougeVehiculeEstOuest=" + feuRougeVehiculeEstOuest + ", feuRougePietonNordSud=" + feuRougePietonNordSud + ", feuRougePietonEstOuest=" + feuRougePietonEstOuest + ", feuRougeCommun=" + feuRougeCommun + " Moment : " + super.getDateFormat() + '}';
+    }
 }

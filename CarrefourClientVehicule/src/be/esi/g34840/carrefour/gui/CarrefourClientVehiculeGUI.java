@@ -16,6 +16,7 @@ import java.util.TimerTask;
 import javax.swing.JFrame;
 
 /**
+ * Classe qui permet au client véhicule d'observer le modèle selon sa vue
  *
  * @author g34840
  */
@@ -38,6 +39,7 @@ public class CarrefourClientVehiculeGUI extends javax.swing.JDialog {
         timer = new Timer();
         feuNS = true;
         ok = true;
+        //Permet de rester en contact avec le serveur, si celui-ci n'est plus on-line on bascule en mode warning
         timerTask = new TimerTask() {
             @Override
             public void run() {
@@ -48,8 +50,8 @@ public class CarrefourClientVehiculeGUI extends javax.swing.JDialog {
                 }
             }
         };
+        // verifie la connection avec le serveur tout les 5 secondes
         timer.schedule(timerTask, 0, 5000);
-        
         initComponents();
         feuVéhicule1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Véhicule Nord-Sud"));
         try {
@@ -77,7 +79,9 @@ public class CarrefourClientVehiculeGUI extends javax.swing.JDialog {
             System.exit(0);
         }
     }
-
+    /**
+     * Permet de passer en mode warning
+     */
     private void warning() {
         timerTask.cancel();
         timer.schedule(new TimerTask() {
@@ -88,7 +92,12 @@ public class CarrefourClientVehiculeGUI extends javax.swing.JDialog {
         }, 0, 1000);
 
     }
-
+    /**
+     * Methode qui reçoit les changements du serveur
+     *
+     * @throws RemoteException si il y a un problème de connection avec le
+     * serveur
+     */
     public void update() throws RemoteException {
         feuVéhicule1.update(serveur.getEtat());
     }
@@ -103,79 +112,91 @@ public class CarrefourClientVehiculeGUI extends javax.swing.JDialog {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        jPanel2 = new javax.swing.JPanel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        optionP = new javax.swing.JPanel();
+        radioANSB = new javax.swing.JRadioButton();
+        radioAEOB = new javax.swing.JRadioButton();
         feuVéhicule1 = new be.esi.g34840.carrefour.gui.FeuVehicule();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Option Axe"));
+        optionP.setBorder(javax.swing.BorderFactory.createTitledBorder("Option Axe"));
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setSelected(true);
-        jRadioButton1.setText("Axe Nord-Sud");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(radioANSB);
+        radioANSB.setSelected(true);
+        radioANSB.setText("Axe Nord-Sud");
+        radioANSB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                radioANSBActionPerformed(evt);
             }
         });
 
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setText("Axe Est-Ouest");
-        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(radioAEOB);
+        radioAEOB.setText("Axe Est-Ouest");
+        radioAEOB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton2ActionPerformed(evt);
+                radioAEOBActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout optionPLayout = new javax.swing.GroupLayout(optionP);
+        optionP.setLayout(optionPLayout);
+        optionPLayout.setHorizontalGroup(
+            optionPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(optionPLayout.createSequentialGroup()
                 .addContainerGap(48, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jRadioButton1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(optionPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(radioAEOB, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(radioANSB, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jRadioButton1)
+        optionPLayout.setVerticalGroup(
+            optionPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(optionPLayout.createSequentialGroup()
+                .addComponent(radioANSB)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jRadioButton2))
+                .addComponent(radioAEOB))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(feuVéhicule1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(optionP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(feuVéhicule1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(feuVéhicule1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(optionP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+    /**
+     * Permet de basculer sur l'axe Nord-Sud
+     *
+     * @param evt
+     */
+    private void radioANSBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioANSBActionPerformed
         feuVéhicule1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Véhicule Nord-Sud"));
         feuVéhicule1.setFeuNS(true);
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
-
-    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+    }//GEN-LAST:event_radioANSBActionPerformed
+    /**
+     * Permet de basculer sur l'axe Est-Ouest
+     *
+     * @param evt
+     */
+    private void radioAEOBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAEOBActionPerformed
         feuVéhicule1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Véhicule Est-Ouest"));
         feuVéhicule1.setFeuNS(false);
-    }//GEN-LAST:event_jRadioButton2ActionPerformed
+    }//GEN-LAST:event_radioAEOBActionPerformed
 
     /**
      * @param args the command line arguments
@@ -221,8 +242,8 @@ public class CarrefourClientVehiculeGUI extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private be.esi.g34840.carrefour.gui.FeuVehicule feuVéhicule1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JPanel optionP;
+    private javax.swing.JRadioButton radioAEOB;
+    private javax.swing.JRadioButton radioANSB;
     // End of variables declaration//GEN-END:variables
 }

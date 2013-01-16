@@ -5,7 +5,6 @@
 package be.esi.g34840.carrefour.gui;
 
 import be.esi.g34840.carrefour.concept.VueClientAdmin;
-import java.awt.Image;
 import javax.swing.JFrame;
 
 /**
@@ -17,14 +16,13 @@ public class VueTpsReel extends javax.swing.JDialog implements VueClientAdmin {
     /**
      * variable de classe contenant l'image à afficher en fond
      */
-    private Image bg;
     private PanelTpsReel panel;
 
     /**
      * Creates new form VueTpsReel
      */
     public VueTpsReel(CarrefourClientAdministrateurGUI admin) {
-        super(new JFrame(), false);
+        super(new JFrame(),false);
         initComponents();
         panel = new PanelTpsReel(admin);
         setContentPane(panel);

@@ -4,13 +4,14 @@
  */
 package be.esi.g34840.carrefour.gui;
 
-import be.esi.alg3.carrefour.mvc.concept.CarrefourVueInterface;
-import be.esi.alg3.carrefour.mvc.model.Carrefour;
-import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
+
+import be.esi.g34840.carrefour.concept.CarrefourVueInterface;
+import be.esi.g34840.carrefour.dto.CarrefourEtat;
+import be.esi.g34840.carrefour.model.Carrefour;
 import javax.swing.JFrame;
 
 /**
- *
+ * Classe qui crée un dialog qui permet de prévisualiser les paramètres sur un carrefour
  * @author J4un3
  */
 public class PrevisualisationGUI extends javax.swing.JDialog implements CarrefourVueInterface {
@@ -23,7 +24,7 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
     private int[] vert, orange, rouge;
     private int rougeCommun;
     private Carrefour carrefour;
-
+    private String[] nomAxe;
     public PrevisualisationGUI(CarrefourClientAdministrateurGUI gui) {
         super(new JFrame(), true);
         initComponents();
@@ -31,14 +32,15 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
         orange = new int[]{(Integer) gui.getJTable1().getValueAt(0, 2), (Integer) gui.getJTable1().getValueAt(1, 2), (Integer) gui.getJTable1().getValueAt(2, 2), (Integer) gui.getJTable1().getValueAt(3, 2)};
         rouge = new int[]{(Integer) gui.getJTable1().getValueAt(0, 3), (Integer) gui.getJTable1().getValueAt(1, 3), (Integer) gui.getJTable1().getValueAt(2, 3), (Integer) gui.getJTable1().getValueAt(3, 3)};
         rougeCommun = gui.getJSlider1().getValue();
-        feuPieton3.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Piéton Nord-Sud"));
-        feuPieton3.setFeuNS(true);
-        feuPieton4.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Piéton Est-Ouest"));
-        feuPieton4.setFeuNS(false);
+        feuPIeton1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Piéton Nord-Sud"));
+        feuPIeton1.setFeuNS(true);
+        feuPieton2.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Piéton Est-Ouest"));
+        feuPieton2.setFeuNS(false);
         feuVehicule1.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Véhicule Nord-Sud"));
         feuVehicule1.setFeuNS(true);
         feuVehicule2.setBorder(javax.swing.BorderFactory.createTitledBorder("Feu Véhicule Est-Ouest"));
         feuVehicule2.setFeuNS(false);
+        this.nomAxe = gui.getNomAxe();
     }
 
     /**
@@ -50,111 +52,111 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        previP = new javax.swing.JPanel();
         feuVehicule1 = new be.esi.g34840.carrefour.gui.FeuVehicule();
         feuVehicule2 = new be.esi.g34840.carrefour.gui.FeuVehicule();
-        feuPieton3 = new be.esi.g34840.carrefour.gui.FeuPieton();
-        feuPieton4 = new be.esi.g34840.carrefour.gui.FeuPieton();
-        jPanel2 = new javax.swing.JPanel();
-        jSlider1 = new javax.swing.JSlider();
-        jLabel5 = new javax.swing.JLabel();
-        jToggleButton1 = new javax.swing.JToggleButton();
+        feuPIeton1 = new be.esi.g34840.carrefour.gui.FeuPieton();
+        feuPieton2 = new be.esi.g34840.carrefour.gui.FeuPieton();
+        configPanel = new javax.swing.JPanel();
+        sliderVitesse = new javax.swing.JSlider();
+        vitesseL = new javax.swing.JLabel();
+        visuB = new javax.swing.JToggleButton();
         msL = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Prévisualisation Carrefour");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Prévisualisation du carrefour"));
+        previP.setBorder(javax.swing.BorderFactory.createTitledBorder("Prévisualisation du carrefour"));
 
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
+        org.jdesktop.layout.GroupLayout previPLayout = new org.jdesktop.layout.GroupLayout(previP);
+        previP.setLayout(previPLayout);
+        previPLayout.setHorizontalGroup(
+            previPLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(previPLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(feuVehicule1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(feuPieton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(feuPIeton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(feuVehicule2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(feuPieton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(feuPieton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        jPanel1Layout.linkSize(new java.awt.Component[] {feuPieton3, feuPieton4, feuVehicule1, feuVehicule2}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
+        previPLayout.linkSize(new java.awt.Component[] {feuPIeton1, feuPieton2, feuVehicule1, feuVehicule2}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
 
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
+        previPLayout.setVerticalGroup(
+            previPLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(previPLayout.createSequentialGroup()
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(previPLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, feuVehicule1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, feuPieton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, feuPIeton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, feuVehicule2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, feuPieton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, feuPieton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuration de la prévisualisation"));
+        configPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuration de la prévisualisation"));
 
-        jSlider1.setMajorTickSpacing(100);
-        jSlider1.setMaximum(1000);
-        jSlider1.setMinimum(100);
-        jSlider1.setMinorTickSpacing(100);
-        jSlider1.setPaintLabels(true);
-        jSlider1.setPaintTicks(true);
-        jSlider1.setSnapToTicks(true);
-        jSlider1.setToolTipText("vitesse d'un tick qui vaut en réalité 1 seconde");
-        jSlider1.setValue(1000);
-        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
+        sliderVitesse.setMajorTickSpacing(100);
+        sliderVitesse.setMaximum(1000);
+        sliderVitesse.setMinimum(100);
+        sliderVitesse.setMinorTickSpacing(100);
+        sliderVitesse.setPaintLabels(true);
+        sliderVitesse.setPaintTicks(true);
+        sliderVitesse.setSnapToTicks(true);
+        sliderVitesse.setToolTipText("vitesse d'un tick qui vaut en réalité 1 seconde");
+        sliderVitesse.setValue(1000);
+        sliderVitesse.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSlider1StateChanged(evt);
+                sliderVitesseStateChanged(evt);
             }
         });
 
-        jLabel5.setText("Vitesse de la prévisualisation :");
+        vitesseL.setText("Vitesse de la prévisualisation :");
 
-        jToggleButton1.setText("Visualiser");
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+        visuB.setText("Visualiser");
+        visuB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
+                visuBActionPerformed(evt);
             }
         });
 
         msL.setText("1000 ms : 1000 ms");
 
-        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
+        org.jdesktop.layout.GroupLayout configPanelLayout = new org.jdesktop.layout.GroupLayout(configPanel);
+        configPanel.setLayout(configPanelLayout);
+        configPanelLayout.setHorizontalGroup(
+            configPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(configPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 197, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(vitesseL, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 197, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSlider1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(sliderVitesse, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, configPanelLayout.createSequentialGroup()
                 .add(0, 0, Short.MAX_VALUE)
                 .add(msL)
                 .add(20, 20, 20))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, configPanelLayout.createSequentialGroup()
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jToggleButton1)
+                .add(visuB)
                 .add(305, 305, 305))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jSlider1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel2Layout.createSequentialGroup()
+        configPanelLayout.setVerticalGroup(
+            configPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(configPanelLayout.createSequentialGroup()
+                .add(configPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(sliderVitesse, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(configPanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jLabel5)))
+                        .add(vitesseL)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(msL)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 22, Short.MAX_VALUE)
-                .add(jToggleButton1)
+                .add(visuB)
                 .addContainerGap())
         );
 
@@ -165,40 +167,40 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(previP, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(configPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(previP, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(configPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        if (jToggleButton1.isSelected()) {
-            jSlider1.setEnabled(false);
-            jToggleButton1.setText("Stop");
-            carrefour = new Carrefour(vert, orange, rouge, rougeCommun, jSlider1.getValue());
+    private void visuBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visuBActionPerformed
+        if (visuB.isSelected()) {
+            sliderVitesse.setEnabled(false);
+            visuB.setText("Stop");
+            carrefour = new Carrefour(vert, orange, rouge, rougeCommun, sliderVitesse.getValue(),nomAxe);
             carrefour.abonne(this);
         } else {
             carrefour.desabonne(this);
             carrefour.stop();
             carrefour = null;
-            jSlider1.setEnabled(true);
-            jToggleButton1.setText("Prévisualiser");
+            sliderVitesse.setEnabled(true);
+            visuB.setText("Prévisualiser");
         }
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
+    }//GEN-LAST:event_visuBActionPerformed
 
-    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
-        msL.setText(jSlider1.getValue() + " ms : 1000 ms");
-    }//GEN-LAST:event_jSlider1StateChanged
+    private void sliderVitesseStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderVitesseStateChanged
+        msL.setText(sliderVitesse.getValue() + " ms : 1000 ms");
+    }//GEN-LAST:event_sliderVitesseStateChanged
 
     /**
      * @param args the command line arguments
@@ -242,16 +244,16 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private be.esi.g34840.carrefour.gui.FeuPieton feuPieton3;
-    private be.esi.g34840.carrefour.gui.FeuPieton feuPieton4;
+    private javax.swing.JPanel configPanel;
+    private be.esi.g34840.carrefour.gui.FeuPieton feuPIeton1;
+    private be.esi.g34840.carrefour.gui.FeuPieton feuPieton2;
     private be.esi.g34840.carrefour.gui.FeuVehicule feuVehicule1;
     private be.esi.g34840.carrefour.gui.FeuVehicule feuVehicule2;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JSlider jSlider1;
-    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JLabel msL;
+    private javax.swing.JPanel previP;
+    private javax.swing.JSlider sliderVitesse;
+    private javax.swing.JToggleButton visuB;
+    private javax.swing.JLabel vitesseL;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -259,7 +261,7 @@ public class PrevisualisationGUI extends javax.swing.JDialog implements Carrefou
         CarrefourEtat etat = carrefour.getEtat();
         feuVehicule1.update(etat);
         feuVehicule2.update(etat);
-        feuPieton3.update(etat);
-        feuPieton4.update(etat);
+        feuPIeton1.update(etat);
+        feuPieton2.update(etat);
     }
 }

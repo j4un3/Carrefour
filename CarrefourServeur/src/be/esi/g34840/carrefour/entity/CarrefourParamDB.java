@@ -11,29 +11,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 
 /**
+ * Entité CarrefourParam
  *
  * @author J4un3
  */
 @Entity
 @Table(name = "CARREFOURPARAM")
 @NamedQueries({
-    @NamedQuery(name = "CarrefourParam.count", query = "SELECT count(p) FROM CarrefourParamDB p WHERE p.dateParam between :dateA and :dateB"),
-    @NamedQuery(name = "CarrefourParam.findMoment", query = "SELECT p FROM CarrefourParamDB p WHERE p.dateParam = :dateMoment")})
-public class CarrefourParamDB implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @NamedQuery(name = "CarrefourParam.count", query = "SELECT count(p) FROM CarrefourParamDB p WHERE p.dateDB between :dateA and :dateB"),
+    @NamedQuery(name = "CarrefourParam.findMoment", query = "SELECT p FROM CarrefourParamDB p WHERE p.dateDB = (select max(p2.dateDB) from CarrefourParamDB p2 where p2.dateDB <= :dateMoment)")})
+public class CarrefourParamDB extends SimulationDB implements Serializable {
     @Column(nullable = false)
     private int feuVertVehiculeNordSud;
     @Column(nullable = false)
@@ -60,14 +52,13 @@ public class CarrefourParamDB implements Serializable {
     private int feuRougePietonEstOuest;
     @Column(nullable = false)
     private int feuRougeCommun;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date dateParam;
-    
+
+
     public CarrefourParamDB() {
     }
-    
 
-    public CarrefourParamDB(int feuVertVehiculeNordSud, int feuVertVehiculeEstOuest, int feuVertPietonNordSud, int feuVertPietonEstOuest, int feuOrangeVehiculeNordSud, int feuOrangeVehiculeEstOuest, int feuOrangePietonNordSud, int feuOrangePietonEstOuest, int feuRougeVehiculeNordSud, int feuRougeVehiculeEstOuest, int feuRougePietonNordSud, int feuRougePietonEstOuest, int feuRougeCommun,Date dateParam) {
+    public CarrefourParamDB(int feuVertVehiculeNordSud, int feuVertVehiculeEstOuest, int feuVertPietonNordSud, int feuVertPietonEstOuest, int feuOrangeVehiculeNordSud, int feuOrangeVehiculeEstOuest, int feuOrangePietonNordSud, int feuOrangePietonEstOuest, int feuRougeVehiculeNordSud, int feuRougeVehiculeEstOuest, int feuRougePietonNordSud, int feuRougePietonEstOuest, int feuRougeCommun, Date dateParam) {
+        super();
         this.feuVertVehiculeNordSud = feuVertVehiculeNordSud;
         this.feuVertVehiculeEstOuest = feuVertVehiculeEstOuest;
         this.feuVertPietonNordSud = feuVertPietonNordSud;
@@ -83,27 +74,12 @@ public class CarrefourParamDB implements Serializable {
         this.feuRougeCommun = feuRougeCommun;
         Timestamp date = new Timestamp(dateParam.getTime());
         date.setNanos(0);
-        this.dateParam = new Date(date.getTime());
-        
-    }
-        public String getDate() {
-        DateFormat df = new SimpleDateFormat("dd MMM yyyy à kk:mm");
-        return df.format(dateParam);
-    }
-    public Long getId() {
-        return id;
+        super.setDateDB(new Date(date.getTime()));
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getDateParam() {
-        return dateParam;
-    }
-
-    public void setDateParam(Date dateParam) {
-        this.dateParam = dateParam;
+    public String getDate() {
+        DateFormat df = new SimpleDateFormat("dd MMM yyyy à kk:mm:ss");
+        return df.format(super.getDateDB());
     }
 
     public int getFeuVertVehiculeNordSud() {
@@ -212,19 +188,69 @@ public class CarrefourParamDB implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 7;
+        hash = 73 * hash + this.feuVertVehiculeNordSud;
+        hash = 73 * hash + this.feuVertVehiculeEstOuest;
+        hash = 73 * hash + this.feuVertPietonNordSud;
+        hash = 73 * hash + this.feuVertPietonEstOuest;
+        hash = 73 * hash + this.feuOrangeVehiculeNordSud;
+        hash = 73 * hash + this.feuOrangeVehiculeEstOuest;
+        hash = 73 * hash + this.feuOrangePietonNordSud;
+        hash = 73 * hash + this.feuOrangePietonEstOuest;
+        hash = 73 * hash + this.feuRougeVehiculeNordSud;
+        hash = 73 * hash + this.feuRougeVehiculeEstOuest;
+        hash = 73 * hash + this.feuRougePietonNordSud;
+        hash = 73 * hash + this.feuRougePietonEstOuest;
+        hash = 73 * hash + this.feuRougeCommun;
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CarrefourParamDB)) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        CarrefourParamDB other = (CarrefourParamDB) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CarrefourParamDB other = (CarrefourParamDB) obj;
+        if (this.feuVertVehiculeNordSud != other.feuVertVehiculeNordSud) {
+            return false;
+        }
+        if (this.feuVertVehiculeEstOuest != other.feuVertVehiculeEstOuest) {
+            return false;
+        }
+        if (this.feuVertPietonNordSud != other.feuVertPietonNordSud) {
+            return false;
+        }
+        if (this.feuVertPietonEstOuest != other.feuVertPietonEstOuest) {
+            return false;
+        }
+        if (this.feuOrangeVehiculeNordSud != other.feuOrangeVehiculeNordSud) {
+            return false;
+        }
+        if (this.feuOrangeVehiculeEstOuest != other.feuOrangeVehiculeEstOuest) {
+            return false;
+        }
+        if (this.feuOrangePietonNordSud != other.feuOrangePietonNordSud) {
+            return false;
+        }
+        if (this.feuOrangePietonEstOuest != other.feuOrangePietonEstOuest) {
+            return false;
+        }
+        if (this.feuRougeVehiculeNordSud != other.feuRougeVehiculeNordSud) {
+            return false;
+        }
+        if (this.feuRougeVehiculeEstOuest != other.feuRougeVehiculeEstOuest) {
+            return false;
+        }
+        if (this.feuRougePietonNordSud != other.feuRougePietonNordSud) {
+            return false;
+        }
+        if (this.feuRougePietonEstOuest != other.feuRougePietonEstOuest) {
+            return false;
+        }
+        if (this.feuRougeCommun != other.feuRougeCommun) {
             return false;
         }
         return true;
@@ -232,6 +258,9 @@ public class CarrefourParamDB implements Serializable {
 
     @Override
     public String toString() {
-        return "be.esi.g34840.carrefour.entity.CarrefourParamDB[ id=" + id + " ]";
+        return "CarrefourParamDB{" + "feuVertVehiculeNordSud=" + feuVertVehiculeNordSud + ", feuVertVehiculeEstOuest=" + feuVertVehiculeEstOuest + ", feuVertPietonNordSud=" + feuVertPietonNordSud + ", feuVertPietonEstOuest=" + feuVertPietonEstOuest + ", feuOrangeVehiculeNordSud=" + feuOrangeVehiculeNordSud + ", feuOrangeVehiculeEstOuest=" + feuOrangeVehiculeEstOuest + ", feuOrangePietonNordSud=" + feuOrangePietonNordSud + ", feuOrangePietonEstOuest=" + feuOrangePietonEstOuest + ", feuRougeVehiculeNordSud=" + feuRougeVehiculeNordSud + ", feuRougeVehiculeEstOuest=" + feuRougeVehiculeEstOuest + ", feuRougePietonNordSud=" + feuRougePietonNordSud + ", feuRougePietonEstOuest=" + feuRougePietonEstOuest + ", feuRougeCommun=" + feuRougeCommun + " Moment : " + getDate() + '}';
     }
+
+
+       
 }

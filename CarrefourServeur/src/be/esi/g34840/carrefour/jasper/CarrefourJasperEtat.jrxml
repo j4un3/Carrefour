@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CarrefourJasperEtat" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="1c341e97-9e45-4dc3-917c-2afa61865a82">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<parameter name="logo" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="nomSociete" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adrSociete" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="monWhere" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="debut" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fin" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     CARREFOURETAT."FEUPIETONEO" AS CARREFOURETAT_FEUPIETONEO,
+     CARREFOURETAT."FEUPIETONNS" AS CARREFOURETAT_FEUPIETONNS,
+     CARREFOURETAT."FEUVEHICULEEO" AS CARREFOURETAT_FEUVEHICULEEO,
+     CARREFOURETAT."FEUVEHICULENS" AS CARREFOURETAT_FEUVEHICULENS,
+     SIMULATIONDB."DATEDB" AS SIMULATIONDB_DATEDB
+FROM
+     "APP"."SIMULATIONDB" SIMULATIONDB INNER JOIN "APP"."CARREFOURETAT" CARREFOURETAT ON SIMULATIONDB."ID" = CARREFOURETAT."ID"
+
+$P!{monWhere}]]>
+	</queryString>
+	<field name="CARREFOURETAT_FEUPIETONEO" class="java.lang.String"/>
+	<field name="CARREFOURETAT_FEUPIETONNS" class="java.lang.String"/>
+	<field name="CARREFOURETAT_FEUVEHICULEEO" class="java.lang.String"/>
+	<field name="CARREFOURETAT_FEUVEHICULENS" class="java.lang.String"/>
+	<field name="SIMULATIONDB_DATEDB" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="70" splitType="Stretch">
+			<image>
+				<reportElement uuid="7c363772-6c73-4472-8707-a853b359f7f0" x="275" y="0" width="300" height="64"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="da104ec2-d2d5-4874-b237-d7d5f1dce1a9" style="Title" x="0" y="13" width="263" height="33"/>
+				<textElement verticalAlignment="Middle" markup="none"/>
+				<textFieldExpression><![CDATA[$P{nomSociete}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1cb5f17d-b267-4623-a1bd-04d07a6980b1" style="SubTitle" x="0" y="46" width="274" height="22"/>
+				<textElement markup="none"/>
+				<textFieldExpression><![CDATA[$P{adrSociete}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<line>
+				<reportElement uuid="343e36ab-a4a6-485c-aea3-642226e0a0d7" positionType="FixRelativeToBottom" x="0" y="35" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement uuid="ca5b5bcd-5707-4325-87e6-52ff0c13bab9" style="Column header" x="0" y="19" width="111" height="15"/>
+				<textElement/>
+				<text><![CDATA[Véhicule Nord-Sud]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8ef231bd-da07-4822-8e11-d90c32ba68b6" style="Column header" x="111" y="19" width="111" height="15"/>
+				<textElement/>
+				<text><![CDATA[Véhicule Est-Ouest]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="df51cab1-3bc6-4564-8f1f-3933fdeafd93" style="Column header" x="222" y="19" width="111" height="15"/>
+				<textElement/>
+				<text><![CDATA[Piéton Nord-Sud]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7feb5417-0dbb-4b45-bf87-ba59404ef4e0" style="Column header" x="333" y="19" width="111" height="15"/>
+				<textElement/>
+				<text><![CDATA[Piéton Est-Ouest]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="20da8e8e-daf0-4e27-b62d-0d7ac3b6d297" style="Column header" x="444" y="19" width="111" height="15"/>
+				<textElement/>
+				<text><![CDATA[Date de l'état]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement uuid="df337fbe-76ac-42d2-9df1-eca649cd09f7" x="0" y="0" width="553" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Temps de simulation entre : " + $P{debut} + " et " +  $P{fin}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<line>
+				<reportElement uuid="cbd19acd-4788-4c6e-b203-633a4aa07a10" positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField pattern="">
+				<reportElement uuid="9bfcd248-9ee8-43c8-b72d-6300e3ab201f" style="Detail" x="0" y="0" width="111" height="15"/>
+				<textElement>
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CARREFOURETAT_FEUVEHICULENS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d38b916e-35b8-43cd-8642-f9b1a71d1497" style="Detail" x="111" y="0" width="111" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CARREFOURETAT_FEUVEHICULEEO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0a013143-45bf-4e1d-aeba-a969968bd8e9" style="Detail" x="222" y="0" width="133" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CARREFOURETAT_FEUPIETONNS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="740ae19e-1ddc-416e-87ff-c99593f2b614" style="Detail" x="333" y="0" width="134" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CARREFOURETAT_FEUPIETONEO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement uuid="52149f67-3d23-4438-8046-94d1da47aca6" style="Detail" x="444" y="0" width="111" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{SIMULATIONDB_DATEDB}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement uuid="471da5e5-372d-400d-87dc-add53f6ddb4f" positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="e7df6a29-da07-416b-8297-fb09723117b4" style="Column header" x="433" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="a680c438-dbcd-4040-b7a7-e4ede6d21a88" style="Column header" x="513" y="0" width="40" height="20"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="eb2881b5-5513-41a5-bde6-e99dacd14284" style="Column header" x="0" y="0" width="197" height="20"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

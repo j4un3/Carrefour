@@ -5,8 +5,15 @@
 package be.esi.g34840.carrefour.gui;
 
 import be.esi.g34840.carrefour.business.CarrefourServeurInterface;
+import be.esi.g34840.carrefour.dto.CarrefourAlert;
+import be.esi.g34840.carrefour.dto.CarrefourEtat;
+import be.esi.g34840.carrefour.dto.CarrefourParam;
+import be.esi.g34840.carrefour.dto.CarrefourSimulation;
 import be.esi.gui.outils.MsgOutils;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Date;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 /**
@@ -21,7 +28,7 @@ public class Historique extends javax.swing.JDialog {
      * Creates new form Historique
      */
     public Historique(CarrefourServeurInterface serveur) {
-        super(new JFrame(), true);
+        super(new JFrame(), false);
         this.serveur = serveur;
         initComponents();
     }
@@ -46,6 +53,7 @@ public class Historique extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Historique d'un moment"));
 
@@ -89,6 +97,11 @@ public class Historique extends javax.swing.JDialog {
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Nombre de changements de feux", "Toutes les alertes", "Simulation" }));
 
         jButton2.setText("Recherche");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -142,35 +155,153 @@ public class Historique extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        System.out.println(dateTimePicker1.getDate());
-        switch (jComboBox1.getSelectedIndex()) {
-            case 0:
-                try {
-                    if (serveur.getEtatDB(dateTimePicker1.getDate()) == null) {
-                        System.out.println("Il n'y a aucun état pour ce moment-là");
-                    } else {
-                        System.out.println(serveur.getEtatDB(dateTimePicker1.getDate()));
-                    }
-                } catch (RemoteException ex) {
-                    MsgOutils.erreur("ConnectException", "Problème de connection avec "
-                            + "le serveur.\n L'application va se terminer.");
-                    System.exit(0);
-                }
-                break;
-            case 1:
-                try {
-                    if (serveur.getParamDB(dateTimePicker1.getDate()) == null) {
-                        System.out.println("Il n'y a aucun paramètre pour ce moment-là");
-                    } else {
-                        System.out.println(serveur.getParamDB(dateTimePicker1.getDate()));
-                    }
-                } catch (RemoteException ex) {
-                    MsgOutils.erreur("ConnectException", "Problème de connection avec "
-                            + "le serveur.\n L'application va se terminer.");
-                    System.exit(0);
-                }
+        if (dateTimePicker1.getDate().after(new Date())) {
+            MsgOutils.erreur("Erreur de moment", "Le moment que vous avez choisi est improbable.\n"
+                    + "Le moment ne doit pas dépassé celui du présent.");
+        } else {
+            switch (jComboBox1.getSelectedIndex()) {
+                case 0:
+                    rechercheEtat();
+                    break;
+                case 1:
+                    rechercheParam();
+                    break;
+
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void rechercheEtat() {
+        try {
+            CarrefourEtat etat = serveur.getEtatDB(dateTimePicker1.getDate());
+            if (etat == null) {
+                MsgOutils.information("No result", "Il y à aucun résultat pour ce moment.");
+            } else {
+                MsgOutils.information("Résultat", " Feu véhicule Nord-Sud : " + etat.getFeux(0)
+                        + "\n Feu véhicule Est-Ouest " + etat.getFeux(1)
+                        + "\n Feu piéton Nord-Sud : " + etat.getFeux(2)
+                        + "\n Feu piéton Est-Ouest : " + etat.getFeux(3));
+            }
+        } catch (RemoteException ex) {
+            MsgOutils.erreur("ConnectException", "Problème de connection avec "
+                    + "le serveur.\n L'application va se fermer.");
+            System.exit(0);
+        }
+    }
+
+    /**
+     * Retourne les paramètres d'un moment donnée
+     */
+    private void rechercheParam() {
+        try {
+            CarrefourParam paramDB = serveur.getParamDB(dateTimePicker1.getDate());
+            if (paramDB == null) {
+                MsgOutils.information("No result", "Il y à aucun résultat pour ce moment.");
+            } else {
+                MsgOutils.information("Résultat", " Feu véhicule vert Nord-Sud : " + paramDB.getFeuVertVehiculeNordSud()
+                        + "\n Feu véhicule orange Nord-Sud : " + paramDB.getFeuOrangeVehiculeNordSud()
+                        + "\n Feu véhicule Rouge Nord-Sud : " + paramDB.getFeuRougeVehiculeNordSud()
+                        + "\n Feu véhicule vert Est-Ouest : " + paramDB.getFeuVertVehiculeEstOuest()
+                        + "\n Feu véhicule orange Est-Ouest : " + paramDB.getFeuOrangeVehiculeEstOuest()
+                        + "\n Feu véhicule Rouge Est-Ouest : " + paramDB.getFeuRougeVehiculeEstOuest()
+                        + "\n Feu piéton vert Nord-Sud : " + paramDB.getFeuVertPietonNordSud()
+                        + "\n Feu piéton orange Nord-Sud : " + paramDB.getFeuOrangePietonNordSud()
+                        + "\n Feu piéton rouge Nord-Sud : " + paramDB.getFeuRougePietonNordSud()
+                        + "\n Feu piéton vert Est-Ouest : " + paramDB.getFeuVertPietonEstOuest()
+                        + "\n Feu piéton orange Est-Ouest : " + paramDB.getFeuOrangePietonEstOuest()
+                        + "\n Feu piéton rouge Est-Ouest : " + paramDB.getFeuRougePietonEstOuest());
+            }
+        } catch (RemoteException ex) {
+            MsgOutils.erreur("ConnectException", "Problème de connection avec "
+                    + "le serveur.\n L'application va se fermer.");
+            System.exit(0);
+        }
+    }
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (dateTimePicker2.getDate().after(dateTimePicker3.getDate())) {
+            MsgOutils.erreur("Erreur de moment", "Le moment de gauche ne doit pas être après le moment de droite.");
+        } else if (dateTimePicker2.getDate().after(new Date()) || dateTimePicker3.getDate().after(new Date())) {
+            MsgOutils.erreur("Erreur de moment", " Au moins un des moments est improbalbe"
+                    + "\n Le moment ne doit pas dépassé celui du présent.");
+        } else {
+            switch (jComboBox2.getSelectedIndex()) {
+                case 0:
+                    nbChangement();
+                    break;
+                case 1:
+                    panelAlert();
+                    break;
+                case 2:
+                    simulation();
+                    break;
+
+
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+    /**
+     * Affiche le nombre de changement d'état qu'il y a eu pendant une période
+     */
+    private void nbChangement() {
+        try {
+            MsgOutils.information("Nombre de changement d'état : ", "" + serveur.getNombreEtatDB(dateTimePicker2.getDate(), dateTimePicker3.getDate()));
+        } catch (RemoteException ex) {
+            MsgOutils.erreur("ConnectException", "Problème de connection avec "
+                    + "le serveur.\n L'application va se fermer.");
+            System.exit(0);
+        }
+    }
+
+    /**
+     * Permet de crée un panel reprenant les différentes alertes durant une
+     * période
+     */
+    private void panelAlert() {
+
+        try {
+
+            ArrayList<CarrefourAlert> alertDB = serveur.getAlertDB(dateTimePicker2.getDate(), dateTimePicker3.getDate());
+            if (!alertDB.isEmpty()) {
+                JDialog alert = new JDialog(new JFrame(), false);
+                alert.setContentPane(new PanelAffichage(alertDB));
+                alert.setVisible(true);
+                alert.pack();
+            } else {
+                MsgOutils.information("No result", "Il y à aucun résultat pour cette période.");
+            }
+        } catch (RemoteException ex) {
+            MsgOutils.erreur("ConnectException", "Problème de connection avec "
+                    + "le serveur.\n L'application va se fermer.");
+            System.exit(0);
+        }
+
+    }
+
+    /**
+     * Permet de crée un panel reprenant les différents états pendant une
+     * période et demande au serveur de crée et envoyer un jasperreport
+     * contenant le tout vers l'email contenu dans le
+     * CarrefourInterface.properties
+     */
+    private void simulation() {
+        try {
+            ArrayList<CarrefourSimulation> simulationDB = serveur.getSimulationDB(dateTimePicker2.getDate(), dateTimePicker3.getDate());
+            if (!simulationDB.isEmpty()) {
+                JDialog alert = new JDialog(new JFrame(), false);
+                alert.setContentPane(new PanelAffichage(simulationDB));
+                alert.setVisible(true);
+                alert.pack();
+                serveur.JasperEtat(dateTimePicker2.getDate(), dateTimePicker3.getDate());
+            } else {
+                MsgOutils.information("No result", "Il y à aucun résultat pour cette période.");
+            }
+        } catch (RemoteException ex) {
+            MsgOutils.erreur("ConnectException", "Problème de connection avec "
+                    + "le serveur.\n L'application va se fermer.");
+            System.exit(0);
+        }
+
+    }
 
     /**
      * @param args the command line arguments

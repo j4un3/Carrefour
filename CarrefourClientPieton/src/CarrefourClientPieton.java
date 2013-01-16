@@ -10,7 +10,7 @@ import consoleaddition.LocalisationDialog;
 
 
 /**
- *
+ * Classe principale permettant de lancer un client pieton
  * @author g34840
  */
 public class CarrefourClientPieton {
@@ -25,5 +25,6 @@ public class CarrefourClientPieton {
         CarrefourServeurInterface carrefour = (CarrefourServeurInterface) config.getObjet();
         CarrefourClientPietonGUI frame = new CarrefourClientPietonGUI(carrefour);
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);    }
 }

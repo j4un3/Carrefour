@@ -1,4 +1,5 @@
 
+import be.esi.g34840.carrefour.implementation.ObjEtudiantImplementation;
 import be.esi.g34840.carrefour.implementation.ServeurImplementation;
 import be.esi.gui.outils.MsgOutils;
 import java.io.FileInputStream;
@@ -13,7 +14,8 @@ import java.util.Properties;
  * and open the template in the editor.
  */
 /**
- *
+ * Classe qui permet d'initialiser le serveur et de le mettre sur l'annuaire
+ * afin d'être disponible aux différents clients
  * @author g34840
  */
 public class Serveur {

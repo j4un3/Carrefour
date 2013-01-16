@@ -9,7 +9,7 @@ import consoleaddition.LocalisationDialog;
 
 
 /**
- *
+  * Classe principale permettant de lancer un client administrateur
  * @author g34840
  */
 public class CarrefourClientAdministrateur {
@@ -24,5 +24,6 @@ public class CarrefourClientAdministrateur {
         CarrefourServeurInterface carrefour = (CarrefourServeurInterface) config.getObjet();
         CarrefourClientAdministrateurGUI frame = new CarrefourClientAdministrateurGUI(carrefour);
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);    }
 }

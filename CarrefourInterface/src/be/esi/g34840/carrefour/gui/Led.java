@@ -66,7 +66,7 @@ public class Led extends javax.swing.JPanel implements Serializable {
     }
 
     /**
-     * Inverse the color of the
+     * Inverse the color of the led
      */
     public void inverse() {
         this.on = !on;

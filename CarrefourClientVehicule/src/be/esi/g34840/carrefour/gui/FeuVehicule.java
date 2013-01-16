@@ -4,20 +4,18 @@
  */
 package be.esi.g34840.carrefour.gui;
 
-import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
-import be.esi.g34840.carrefour.implementation.VueCarrefourClientVehicule;
+import be.esi.g34840.carrefour.dto.CarrefourEtat;
 import java.awt.Color;
 
 /**
+ * Classe qui affiche un feu véhicule
  *
  * @author g34840
  */
 public class FeuVehicule extends javax.swing.JPanel {
 
-    public static int FEUX_VEHICULE_N_S = 0;
-    public static int FEUX_VEHICULE_E_O = 1;
-    private VueCarrefourClientVehicule client;
-    private boolean ok;
+    public static int FEUX_VEHICULE_N_S = 0, FEUX_VEHICULE_E_O = 1;
+    private int clignotant;
     private boolean feuNS;
 
     /**
@@ -35,19 +33,24 @@ public class FeuVehicule extends javax.swing.JPanel {
         this.feuNS = feuNS;
     }
 
+    /**
+     * Permet de mettre les feux en mode warning
+     */
     public void setFeuWarning() {
-        if (ok) {
-            ledFeuOrange.setColor(Color.black);
-            ledFeuOrange.setColor(Color.black);
-        } else {
-            ledFeuOrange.setColor(Color.orange);
-            ledFeuOrange.setColor(Color.orange);
-        }
-        ok = !ok;
         ledFeuRouge.setColor(Color.black);
         ledFeuVert.setColor(Color.black);
+        if ((clignotant++) % 2 == 0) {
+            ledFeuOrange.setColor(Color.orange);
+        } else {
+            ledFeuOrange.setColor(Color.black);
+        }
     }
 
+    /**
+     * Change la couleur des composants graphiques selon l'état des feux
+     *
+     * @param etat l'état des feux
+     */
     public void update(CarrefourEtat etat) {
         switch (etat.getFeux(feuNS ? FEUX_VEHICULE_N_S : FEUX_VEHICULE_E_O).getValue()) {
             case 0:
@@ -66,12 +69,8 @@ public class FeuVehicule extends javax.swing.JPanel {
                 ledFeuRouge.setColor(etat.getFeux(feuNS ? FEUX_VEHICULE_N_S : FEUX_VEHICULE_E_O).getColor());
                 break;
             case 5:
-                ledFeuRouge.setColor(Color.black);
-                ledFeuVert.setColor(Color.black);
                 setFeuWarning();
                 break;
-
-
         }
     }
 

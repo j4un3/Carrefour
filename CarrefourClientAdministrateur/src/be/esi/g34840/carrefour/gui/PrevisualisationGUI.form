@@ -26,8 +26,8 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jPanel1" max="32767" attributes="0"/>
-                  <Component id="jPanel2" max="32767" attributes="0"/>
+                  <Component id="previP" max="32767" attributes="0"/>
+                  <Component id="configPanel" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -36,16 +36,16 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+              <Component id="previP" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
+              <Component id="configPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="jPanel1">
+    <Container class="javax.swing.JPanel" name="previP">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -61,11 +61,11 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="feuVehicule1" linkSize="1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="feuPieton3" linkSize="1" min="-2" max="-2" attributes="0"/>
+                  <Component id="feuPIeton1" linkSize="1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="feuVehicule2" linkSize="1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="feuPieton4" linkSize="1" min="-2" max="-2" attributes="0"/>
+                  <Component id="feuPieton2" linkSize="1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -76,9 +76,9 @@
                   <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="feuVehicule1" alignment="1" min="-2" max="-2" attributes="0"/>
-                      <Component id="feuPieton3" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="feuPIeton1" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="feuVehicule2" alignment="1" min="-2" max="-2" attributes="0"/>
-                      <Component id="feuPieton4" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="feuPieton2" alignment="1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -90,13 +90,13 @@
         </Component>
         <Component class="be.esi.g34840.carrefour.gui.FeuVehicule" name="feuVehicule2">
         </Component>
-        <Component class="be.esi.g34840.carrefour.gui.FeuPieton" name="feuPieton3">
+        <Component class="be.esi.g34840.carrefour.gui.FeuPieton" name="feuPIeton1">
         </Component>
-        <Component class="be.esi.g34840.carrefour.gui.FeuPieton" name="feuPieton4">
+        <Component class="be.esi.g34840.carrefour.gui.FeuPieton" name="feuPieton2">
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="jPanel2">
+    <Container class="javax.swing.JPanel" name="configPanel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -110,9 +110,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jLabel5" min="-2" pref="197" max="-2" attributes="0"/>
+                  <Component id="vitesseL" min="-2" pref="197" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jSlider1" max="32767" attributes="0"/>
+                  <Component id="sliderVitesse" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
               <Group type="102" alignment="1" attributes="0">
@@ -122,7 +122,7 @@
               </Group>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="jToggleButton1" min="-2" max="-2" attributes="0"/>
+                  <Component id="visuB" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="305" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -131,23 +131,23 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jSlider1" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="sliderVitesse" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                          <Component id="vitesseL" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="msL" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="22" max="32767" attributes="0"/>
-                  <Component id="jToggleButton1" min="-2" max="-2" attributes="0"/>
+                  <Component id="visuB" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JSlider" name="jSlider1">
+        <Component class="javax.swing.JSlider" name="sliderVitesse">
           <Properties>
             <Property name="majorTickSpacing" type="int" value="100"/>
             <Property name="maximum" type="int" value="1000"/>
@@ -160,20 +160,20 @@
             <Property name="value" type="int" value="1000"/>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="jSlider1StateChanged"/>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="sliderVitesseStateChanged"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel5">
+        <Component class="javax.swing.JLabel" name="vitesseL">
           <Properties>
             <Property name="text" type="java.lang.String" value="Vitesse de la pr&#xe9;visualisation :"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JToggleButton" name="jToggleButton1">
+        <Component class="javax.swing.JToggleButton" name="visuB">
           <Properties>
             <Property name="text" type="java.lang.String" value="Visualiser"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jToggleButton1ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="visuBActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="msL">

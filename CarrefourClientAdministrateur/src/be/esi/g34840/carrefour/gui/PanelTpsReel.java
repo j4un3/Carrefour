@@ -20,14 +20,13 @@ public class PanelTpsReel extends JComponent {
             FEUX_VEHICULE_E_O = 1, FEUX_VEHICULE_N_S = 0;
     private Image bg;
     private CarrefourClientAdministrateurGUI admin;
-    private boolean ok, warning;
+    private boolean  warning;
 
     /**
      * Creates new form PanelTpsReel
      */
     public PanelTpsReel(CarrefourClientAdministrateurGUI admin) {
         this.admin = admin;
-        ok = true;
         warning = false;
         initComponents();
         feuOn(true);
@@ -39,6 +38,7 @@ public class PanelTpsReel extends JComponent {
      */
     @Override
     public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         g.drawImage(bg, 0, 0, this.getWidth(), this.getHeight(), null);
     }
 

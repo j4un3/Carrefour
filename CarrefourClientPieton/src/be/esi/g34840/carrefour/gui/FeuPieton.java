@@ -4,17 +4,18 @@
  */
 package be.esi.g34840.carrefour.gui;
 
-import be.esi.alg3.carrefour.mvc.model.CarrefourEtat;
+import be.esi.g34840.carrefour.dto.CarrefourEtat;
 import java.awt.Color;
 
 /**
+ * Classe qui affiche un feu piéton
  *
  * @author g34840
  */
 public class FeuPieton extends javax.swing.JPanel {
 
     public static int FEUX_PIETON_E_O = 3, FEUX_PIETON_N_S = 2;
-    private static int cptTest;
+    private int clignotant;
     private boolean feuNS;
 
     /**
@@ -27,18 +28,30 @@ public class FeuPieton extends javax.swing.JPanel {
         feuNS = true;
     }
 
+    public boolean getFeuNS() {
+        return feuNS;
+    }
+
     public void setFeuNS(boolean feuNS) {
         this.feuNS = feuNS;
     }
 
-    private void setFeuVertClignotant(int feu) {
-        if ((cptTest++) % 2 == 0) {
+    /**
+     * Permet de faire clignoté le feu vert
+     */
+    private void setFeuVertClignotant() {
+        if ((clignotant++) % 2 == 0) {
             ledFeuVert.setColor(Color.green);
         } else {
             ledFeuVert.setColor(Color.black);
         }
     }
 
+    /**
+     * Change la couleur des composants graphiques selon l'état des feux
+     *
+     * @param etat l'état des feux
+     */
     public void update(CarrefourEtat etat) {
         switch (etat.getFeux(feuNS ? FEUX_PIETON_N_S : FEUX_PIETON_E_O).getValue()) {
             case 0:
@@ -51,7 +64,7 @@ public class FeuPieton extends javax.swing.JPanel {
                 break;
             case 3:
                 ledFeuRouge.setColor(Color.black);
-                setFeuVertClignotant(feuNS ? FEUX_PIETON_N_S : FEUX_PIETON_E_O);
+                setFeuVertClignotant();
                 break;
             case 5:
                 ledFeuRouge.setColor(Color.black);
@@ -60,6 +73,9 @@ public class FeuPieton extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Permet de mettre les feux en mode warning
+     */
     public void setFeuWarning() {
         ledFeuRouge.setColor(Color.black);
         ledFeuVert.setColor(Color.black);
